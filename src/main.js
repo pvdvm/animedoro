@@ -30,7 +30,10 @@ app.whenReady().then(() => {
   });
 });
 
-const getBackupPath = () => path.join(app.getPath('userData'), 'animedoro_backup.json');
+const getBackupPath = () => {
+  const baseDir = path.dirname(app.getPath('exe'));
+  return path.join(baseDir, 'animedoro_backup.json');
+};
 
 ipcMain.handle('save-backup', async (event, payload) => {
   const backupPath = getBackupPath();

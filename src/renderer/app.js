@@ -464,7 +464,7 @@ const selectTab = (tabId) => {
 };
 
 const adjustTimer = (minutes) => {
-  const newValue = Math.max(60, state.remainingSeconds + minutes * 60);
+  const newValue = Math.max(1, state.remainingSeconds + minutes * 60);
   state.remainingSeconds = newValue;
   state.timers[state.activeTabId] = newValue;
   saveState();
@@ -475,8 +475,8 @@ const editTimer = () => {
   if (state.running) return;
   const input = prompt('Digite o tempo em minutos:', Math.floor(state.remainingSeconds / 60));
   const minutes = Number(input);
-  if (!Number.isNaN(minutes) && minutes > 0) {
-    state.remainingSeconds = minutes * 60;
+  if (!Number.isNaN(minutes) && minutes >= 0) {
+    state.remainingSeconds = Math.max(1, Math.round(minutes * 60));
     state.timers[state.activeTabId] = state.remainingSeconds;
     saveState();
     renderTimer();
