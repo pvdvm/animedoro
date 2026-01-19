@@ -778,7 +778,7 @@ const playSound = () => {
   audio.play().catch(() => {});
 };
 
-const completeTimer = () => {
+const completeTimer = async () => {
   clearInterval(state.intervalId);
   state.running = false;
 
@@ -821,9 +821,14 @@ const completeTimer = () => {
   playSound();
   if (state.autoSave) {
     if (window.animedoroApi?.saveBackup) {
-      window.animedoroApi.saveBackup(buildSnapshot());
+      try {
+        await window.animedoroApi.saveBackup(buildSnapshot());
+      } catch (error) {
+        console.error('Falha ao salvar backup automático:', error);
+        await exportSnapshot();
+      }
     } else {
-      exportSnapshot();
+      await exportSnapshot();
     }
   }
 };
@@ -1001,12 +1006,16 @@ const buildSnapshot = () => ({
   }
 });
 
-const exportSnapshot = () => {
+const exportSnapshot = async () => {
   const snapshot = buildSnapshot();
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
   if (window.animedoroApi?.exportBackup) {
-    window.animedoroApi.exportBackup(snapshot);
-    return;
+    try {
+      await window.animedoroApi.exportBackup(snapshot);
+      return;
+    } catch (error) {
+      console.error('Falha ao exportar backup:', error);
+    }
   }
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');

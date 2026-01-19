@@ -31,7 +31,7 @@ app.whenReady().then(() => {
 });
 
 const getBackupPath = () => {
-  const baseDir = path.dirname(app.getPath('exe'));
+  const baseDir = app.isPackaged ? path.dirname(app.getPath('exe')) : process.cwd();
   return path.join(baseDir, 'save.json');
 };
 
