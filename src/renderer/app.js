@@ -47,6 +47,11 @@ const THEMES = [
   {
     id: 'non-non-biyori',
     label: 'Non Non Biyori',
+    font: "'Segoe UI', 'Verdana', sans-serif",
+    heading: "'Segoe UI Semibold', 'Trebuchet MS', sans-serif",
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    shadow: '0 18px 35px rgba(78, 92, 120, 0.25)',
     light: {
       panel: '228, 233, 240',
       border: 'rgba(180, 190, 205, 0.7)',
@@ -54,7 +59,8 @@ const THEMES = [
       accentStrong: '#5f7188',
       primary: '#79a6a6',
       muted: '#728096',
-      overlay: 'rgba(208, 214, 224, 0.85)'
+      overlay: 'rgba(208, 214, 224, 0.85)',
+      texture: 'linear-gradient(140deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0))'
     },
     dark: {
       panel: '18, 22, 35',
@@ -63,12 +69,18 @@ const THEMES = [
       accentStrong: '#6d84a1',
       primary: '#6fa3a8',
       muted: '#9ca3b7',
-      overlay: 'rgba(14, 18, 28, 0.9)'
+      overlay: 'rgba(14, 18, 28, 0.9)',
+      texture: 'linear-gradient(140deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0))'
     }
   },
   {
     id: 'another',
     label: 'Another',
+    font: "'Georgia', 'Times New Roman', serif",
+    heading: "'Georgia', 'Times New Roman', serif",
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    shadow: '0 16px 40px rgba(60, 30, 45, 0.35)',
     light: {
       panel: '235, 230, 232',
       border: 'rgba(180, 160, 170, 0.7)',
@@ -76,7 +88,9 @@ const THEMES = [
       accentStrong: '#6a2f3c',
       primary: '#b06b7a',
       muted: '#7c6c72',
-      overlay: 'rgba(220, 210, 215, 0.85)'
+      overlay: 'rgba(220, 210, 215, 0.85)',
+      texture:
+        'repeating-linear-gradient(135deg, rgba(150, 120, 135, 0.2) 0 8px, rgba(255, 255, 255, 0) 8px 16px)'
     },
     dark: {
       panel: '18, 15, 20',
@@ -85,12 +99,19 @@ const THEMES = [
       accentStrong: '#8f3a4a',
       primary: '#c36a7a',
       muted: '#b8a5ad',
-      overlay: 'rgba(10, 8, 12, 0.92)'
+      overlay: 'rgba(10, 8, 12, 0.92)',
+      texture:
+        'repeating-linear-gradient(135deg, rgba(120, 80, 95, 0.25) 0 10px, rgba(255, 255, 255, 0) 10px 20px)'
     }
   },
   {
     id: 'evangelion',
     label: 'Evangelion',
+    font: "'Bahnschrift', 'Arial Narrow', sans-serif",
+    heading: "'Impact', 'Bahnschrift', sans-serif",
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    shadow: '0 16px 40px rgba(20, 40, 20, 0.35)',
     light: {
       panel: '230, 236, 226',
       border: 'rgba(150, 170, 150, 0.7)',
@@ -98,7 +119,8 @@ const THEMES = [
       accentStrong: '#405b30',
       primary: '#6d8f46',
       muted: '#6b7762',
-      overlay: 'rgba(208, 220, 206, 0.85)'
+      overlay: 'rgba(208, 220, 206, 0.85)',
+      texture: 'linear-gradient(135deg, rgba(140, 210, 120, 0.2), rgba(255, 255, 255, 0))'
     },
     dark: {
       panel: '18, 24, 16',
@@ -107,12 +129,18 @@ const THEMES = [
       accentStrong: '#58792f',
       primary: '#89b04b',
       muted: '#a7b6a0',
-      overlay: 'rgba(10, 14, 8, 0.92)'
+      overlay: 'rgba(10, 14, 8, 0.92)',
+      texture: 'linear-gradient(135deg, rgba(120, 200, 80, 0.18), rgba(255, 255, 255, 0))'
     }
   },
   {
     id: 'berserk',
     label: 'Berserk',
+    font: "'Palatino Linotype', 'Georgia', serif",
+    heading: "'Palatino Linotype', 'Georgia', serif",
+    borderStyle: 'double',
+    borderWidth: '3px',
+    shadow: '0 18px 45px rgba(50, 30, 20, 0.45)',
     light: {
       panel: '235, 230, 220',
       border: 'rgba(160, 140, 120, 0.7)',
@@ -120,7 +148,8 @@ const THEMES = [
       accentStrong: '#5a3f28',
       primary: '#8a5f3a',
       muted: '#7a6a5a',
-      overlay: 'rgba(218, 210, 198, 0.85)'
+      overlay: 'rgba(218, 210, 198, 0.85)',
+      texture: 'linear-gradient(145deg, rgba(150, 110, 80, 0.18), rgba(255, 255, 255, 0))'
     },
     dark: {
       panel: '20, 16, 14',
@@ -129,12 +158,18 @@ const THEMES = [
       accentStrong: '#7a4e2f',
       primary: '#b07a4d',
       muted: '#b2a293',
-      overlay: 'rgba(10, 8, 6, 0.92)'
+      overlay: 'rgba(10, 8, 6, 0.92)',
+      texture: 'linear-gradient(145deg, rgba(120, 80, 50, 0.2), rgba(255, 255, 255, 0))'
     }
   },
   {
     id: 'frieren',
     label: 'Frieren',
+    font: "'Cambria', 'Georgia', serif",
+    heading: "'Garamond', 'Cambria', serif",
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    shadow: '0 18px 40px rgba(50, 70, 90, 0.25)',
     light: {
       panel: '230, 236, 240',
       border: 'rgba(170, 190, 200, 0.7)',
@@ -142,7 +177,8 @@ const THEMES = [
       accentStrong: '#4f6f80',
       primary: '#7ba0b2',
       muted: '#728896',
-      overlay: 'rgba(210, 220, 230, 0.85)'
+      overlay: 'rgba(210, 220, 230, 0.85)',
+      texture: 'linear-gradient(160deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0))'
     },
     dark: {
       panel: '16, 22, 28',
@@ -151,12 +187,18 @@ const THEMES = [
       accentStrong: '#5e7f90',
       primary: '#8fb2c2',
       muted: '#a9b6c0',
-      overlay: 'rgba(8, 12, 16, 0.92)'
+      overlay: 'rgba(8, 12, 16, 0.92)',
+      texture: 'linear-gradient(160deg, rgba(120, 160, 190, 0.12), rgba(255, 255, 255, 0))'
     }
   },
   {
     id: 'naruto',
     label: 'Naruto',
+    font: "'Segoe UI', 'Trebuchet MS', sans-serif",
+    heading: "'Impact', 'Segoe UI', sans-serif",
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    shadow: '0 16px 40px rgba(120, 70, 20, 0.3)',
     light: {
       panel: '242, 234, 220',
       border: 'rgba(200, 170, 130, 0.7)',
@@ -164,7 +206,9 @@ const THEMES = [
       accentStrong: '#b56a1e',
       primary: '#e39a3b',
       muted: '#8b7760',
-      overlay: 'rgba(228, 216, 198, 0.85)'
+      overlay: 'rgba(228, 216, 198, 0.85)',
+      texture:
+        'repeating-linear-gradient(135deg, rgba(255, 180, 80, 0.2) 0 12px, rgba(255, 255, 255, 0) 12px 24px)'
     },
     dark: {
       panel: '28, 22, 14',
@@ -173,12 +217,19 @@ const THEMES = [
       accentStrong: '#b97b30',
       primary: '#f1a84b',
       muted: '#c3b19a',
-      overlay: 'rgba(14, 10, 6, 0.92)'
+      overlay: 'rgba(14, 10, 6, 0.92)',
+      texture:
+        'repeating-linear-gradient(135deg, rgba(180, 120, 60, 0.18) 0 12px, rgba(255, 255, 255, 0) 12px 24px)'
     }
   },
   {
     id: 'dragon-ball',
     label: 'Dragon Ball',
+    font: "'Arial Black', 'Segoe UI', sans-serif",
+    heading: "'Impact', 'Arial Black', sans-serif",
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    shadow: '0 18px 40px rgba(120, 60, 10, 0.35)',
     light: {
       panel: '242, 232, 220',
       border: 'rgba(200, 160, 120, 0.7)',
@@ -186,7 +237,8 @@ const THEMES = [
       accentStrong: '#b0571c',
       primary: '#e58b2f',
       muted: '#8d7560',
-      overlay: 'rgba(230, 214, 198, 0.85)'
+      overlay: 'rgba(230, 214, 198, 0.85)',
+      texture: 'radial-gradient(circle at top left, rgba(255, 200, 100, 0.3), transparent 60%)'
     },
     dark: {
       panel: '30, 20, 12',
@@ -195,12 +247,18 @@ const THEMES = [
       accentStrong: '#b66a28',
       primary: '#f09a3a',
       muted: '#c8b59d',
-      overlay: 'rgba(14, 9, 5, 0.92)'
+      overlay: 'rgba(14, 9, 5, 0.92)',
+      texture: 'radial-gradient(circle at top left, rgba(210, 140, 70, 0.28), transparent 60%)'
     }
   },
   {
     id: 'one-punch-man',
     label: 'One Punch Man',
+    font: "'Franklin Gothic Medium', 'Segoe UI', sans-serif",
+    heading: "'Impact', 'Franklin Gothic Medium', sans-serif",
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    shadow: '0 16px 38px rgba(120, 60, 20, 0.3)',
     light: {
       panel: '240, 236, 232',
       border: 'rgba(210, 180, 120, 0.7)',
@@ -208,7 +266,8 @@ const THEMES = [
       accentStrong: '#b55f1a',
       primary: '#f0b23c',
       muted: '#8a7a6b',
-      overlay: 'rgba(228, 220, 210, 0.85)'
+      overlay: 'rgba(228, 220, 210, 0.85)',
+      texture: 'linear-gradient(135deg, rgba(255, 220, 120, 0.25), rgba(255, 255, 255, 0))'
     },
     dark: {
       panel: '26, 20, 16',
@@ -217,12 +276,18 @@ const THEMES = [
       accentStrong: '#b87426',
       primary: '#f2b93e',
       muted: '#c0b3a3',
-      overlay: 'rgba(12, 8, 6, 0.92)'
+      overlay: 'rgba(12, 8, 6, 0.92)',
+      texture: 'linear-gradient(135deg, rgba(220, 150, 70, 0.22), rgba(255, 255, 255, 0))'
     }
   },
   {
     id: 'ergo-proxy',
     label: 'Ergo Proxy',
+    font: "'Segoe UI', 'Arial', sans-serif",
+    heading: "'Segoe UI', 'Arial', sans-serif",
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    shadow: '0 18px 38px rgba(40, 50, 70, 0.35)',
     light: {
       panel: '230, 232, 236',
       border: 'rgba(170, 170, 180, 0.7)',
@@ -230,7 +295,9 @@ const THEMES = [
       accentStrong: '#5a5f70',
       primary: '#8b93a8',
       muted: '#70757f',
-      overlay: 'rgba(210, 214, 220, 0.85)'
+      overlay: 'rgba(210, 214, 220, 0.85)',
+      texture:
+        'repeating-linear-gradient(90deg, rgba(120, 130, 150, 0.18) 0 6px, rgba(255, 255, 255, 0) 6px 12px)'
     },
     dark: {
       panel: '18, 20, 26',
@@ -239,12 +306,19 @@ const THEMES = [
       accentStrong: '#66708a',
       primary: '#9aa3b8',
       muted: '#b0b7c4',
-      overlay: 'rgba(10, 12, 16, 0.92)'
+      overlay: 'rgba(10, 12, 16, 0.92)',
+      texture:
+        'repeating-linear-gradient(90deg, rgba(90, 100, 120, 0.2) 0 6px, rgba(255, 255, 255, 0) 6px 12px)'
     }
   },
   {
     id: 'serial-lain',
     label: 'Serial Lain',
+    font: "'Consolas', 'Courier New', monospace",
+    heading: "'Consolas', 'Courier New', monospace",
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    shadow: '0 16px 36px rgba(20, 40, 40, 0.35)',
     light: {
       panel: '230, 236, 238',
       border: 'rgba(160, 180, 190, 0.7)',
@@ -252,7 +326,9 @@ const THEMES = [
       accentStrong: '#4f7073',
       primary: '#7fa7a8',
       muted: '#6f8083',
-      overlay: 'rgba(210, 220, 224, 0.85)'
+      overlay: 'rgba(210, 220, 224, 0.85)',
+      texture:
+        'repeating-linear-gradient(0deg, rgba(130, 170, 170, 0.2) 0 2px, rgba(255, 255, 255, 0) 2px 4px)'
     },
     dark: {
       panel: '16, 22, 24',
@@ -261,7 +337,9 @@ const THEMES = [
       accentStrong: '#5f8083',
       primary: '#89b3b4',
       muted: '#a8b8b9',
-      overlay: 'rgba(8, 12, 13, 0.92)'
+      overlay: 'rgba(8, 12, 13, 0.92)',
+      texture:
+        'repeating-linear-gradient(0deg, rgba(110, 140, 140, 0.22) 0 2px, rgba(255, 255, 255, 0) 2px 4px)'
     }
   }
 ];
@@ -457,6 +535,7 @@ const loadState = () => {
 
 const applyTheme = () => {
   document.body.dataset.theme = state.theme;
+  document.body.dataset.themeId = state.themeId;
   themeLightBtn.classList.toggle('active', state.theme === 'light');
   themeDarkBtn.classList.toggle('active', state.theme === 'dark');
   const theme = THEMES.find((item) => item.id === state.themeId) || THEMES[0];
@@ -468,6 +547,18 @@ const applyTheme = () => {
   document.documentElement.style.setProperty('--primary', themeValues.primary);
   document.documentElement.style.setProperty('--text-muted', themeValues.muted);
   document.documentElement.style.setProperty('--theme-overlay', themeValues.overlay);
+  document.documentElement.style.setProperty('--panel-texture', themeValues.texture || 'none');
+  document.documentElement.style.setProperty('--theme-font', theme.font || "'Segoe UI', system-ui, sans-serif");
+  document.documentElement.style.setProperty(
+    '--theme-heading-font',
+    theme.heading || "'Segoe UI', system-ui, sans-serif"
+  );
+  document.documentElement.style.setProperty('--theme-border-style', theme.borderStyle || 'solid');
+  document.documentElement.style.setProperty('--theme-border-width', theme.borderWidth || '1px');
+  document.documentElement.style.setProperty(
+    '--theme-shadow',
+    theme.shadow || '0 12px 25px rgba(0, 0, 0, 0.18)'
+  );
   applyPalette();
 };
 
@@ -547,22 +638,30 @@ const applyCharacter = () => {
 
 const renderTabs = () => {
   tabsEl.innerHTML = '';
+  const lockTabs = state.running;
   state.tabs.forEach((tab) => {
     const button = document.createElement('button');
     button.className = `tab ${tab.id === state.activeTabId ? 'active' : ''}`;
     button.dataset.tabId = tab.id;
+    button.classList.toggle('disabled', lockTabs);
+    button.disabled = lockTabs;
     const icon = resolveTabIcon(tab);
     button.appendChild(createIconElement(icon, 'tab-icon'));
     const label = document.createElement('span');
     label.textContent = tab.label;
     button.appendChild(label);
-    button.addEventListener('click', () => selectTab(tab.id));
+    button.addEventListener('click', () => {
+      if (state.running) return;
+      selectTab(tab.id);
+    });
     if (!tab.isLocked) {
       const closeBtn = document.createElement('button');
       closeBtn.className = 'tab-close';
       closeBtn.textContent = '×';
+      closeBtn.disabled = lockTabs;
       closeBtn.addEventListener('click', (event) => {
         event.stopPropagation();
+        if (state.running) return;
         removeTab(tab.id);
       });
       button.appendChild(closeBtn);
@@ -734,9 +833,10 @@ const adjustTimer = (minutes) => {
 };
 
 const editTimer = () => {
-  if (state.running) return;
-  const input = prompt('Digite o tempo em minutos:', Math.floor(state.remainingSeconds / 60));
-  const minutes = Number(input);
+  const currentMinutes = (state.remainingSeconds / 60).toFixed(2);
+  const input = prompt('Digite o tempo em minutos:', currentMinutes);
+  if (input === null) return;
+  const minutes = Number.parseFloat(input.replace(',', '.'));
   if (!Number.isNaN(minutes) && minutes >= 0) {
     state.remainingSeconds = Math.max(1, Math.round(minutes * 60));
     state.timers[state.activeTabId] = state.remainingSeconds;
@@ -1011,7 +1111,10 @@ const exportSnapshot = async () => {
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
   if (window.animedoroApi?.exportBackup) {
     try {
-      await window.animedoroApi.exportBackup(snapshot);
+      const backupPath = await window.animedoroApi.exportBackup(snapshot);
+      if (backupPath) {
+        console.info(`Backup exportado para ${backupPath}`);
+      }
       return;
     } catch (error) {
       console.error('Falha ao exportar backup:', error);
