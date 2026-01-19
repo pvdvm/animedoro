@@ -48,7 +48,7 @@ const THEMES = [
     id: 'non-non-biyori',
     label: 'Non Non Biyori',
     light: {
-      panel: '228 233 240',
+      panel: '228, 233, 240',
       border: 'rgba(180, 190, 205, 0.7)',
       accent: '#7c8ea3',
       accentStrong: '#5f7188',
@@ -57,7 +57,7 @@ const THEMES = [
       overlay: 'rgba(208, 214, 224, 0.85)'
     },
     dark: {
-      panel: '18 22 35',
+      panel: '18, 22, 35',
       border: 'rgba(54, 64, 90, 0.5)',
       accent: '#8fa3bd',
       accentStrong: '#6d84a1',
@@ -70,7 +70,7 @@ const THEMES = [
     id: 'another',
     label: 'Another',
     light: {
-      panel: '235 230 232',
+      panel: '235, 230, 232',
       border: 'rgba(180, 160, 170, 0.7)',
       accent: '#8a4f5c',
       accentStrong: '#6a2f3c',
@@ -79,7 +79,7 @@ const THEMES = [
       overlay: 'rgba(220, 210, 215, 0.85)'
     },
     dark: {
-      panel: '18 15 20',
+      panel: '18, 15, 20',
       border: 'rgba(90, 70, 80, 0.6)',
       accent: '#b45f6d',
       accentStrong: '#8f3a4a',
@@ -92,7 +92,7 @@ const THEMES = [
     id: 'evangelion',
     label: 'Evangelion',
     light: {
-      panel: '230 236 226',
+      panel: '230, 236, 226',
       border: 'rgba(150, 170, 150, 0.7)',
       accent: '#5f7a46',
       accentStrong: '#405b30',
@@ -101,7 +101,7 @@ const THEMES = [
       overlay: 'rgba(208, 220, 206, 0.85)'
     },
     dark: {
-      panel: '18 24 16',
+      panel: '18, 24, 16',
       border: 'rgba(70, 95, 60, 0.6)',
       accent: '#7aa043',
       accentStrong: '#58792f',
@@ -114,7 +114,7 @@ const THEMES = [
     id: 'berserk',
     label: 'Berserk',
     light: {
-      panel: '235 230 220',
+      panel: '235, 230, 220',
       border: 'rgba(160, 140, 120, 0.7)',
       accent: '#7a5a3a',
       accentStrong: '#5a3f28',
@@ -123,7 +123,7 @@ const THEMES = [
       overlay: 'rgba(218, 210, 198, 0.85)'
     },
     dark: {
-      panel: '20 16 14',
+      panel: '20, 16, 14',
       border: 'rgba(80, 60, 50, 0.6)',
       accent: '#a6734a',
       accentStrong: '#7a4e2f',
@@ -136,7 +136,7 @@ const THEMES = [
     id: 'frieren',
     label: 'Frieren',
     light: {
-      panel: '230 236 240',
+      panel: '230, 236, 240',
       border: 'rgba(170, 190, 200, 0.7)',
       accent: '#6f8fa0',
       accentStrong: '#4f6f80',
@@ -145,7 +145,7 @@ const THEMES = [
       overlay: 'rgba(210, 220, 230, 0.85)'
     },
     dark: {
-      panel: '16 22 28',
+      panel: '16, 22, 28',
       border: 'rgba(70, 90, 100, 0.6)',
       accent: '#86a7b8',
       accentStrong: '#5e7f90',
@@ -158,7 +158,7 @@ const THEMES = [
     id: 'naruto',
     label: 'Naruto',
     light: {
-      panel: '242 234 220',
+      panel: '242, 234, 220',
       border: 'rgba(200, 170, 130, 0.7)',
       accent: '#d18a36',
       accentStrong: '#b56a1e',
@@ -167,7 +167,7 @@ const THEMES = [
       overlay: 'rgba(228, 216, 198, 0.85)'
     },
     dark: {
-      panel: '28 22 14',
+      panel: '28, 22, 14',
       border: 'rgba(120, 90, 60, 0.6)',
       accent: '#e09b44',
       accentStrong: '#b97b30',
@@ -180,7 +180,7 @@ const THEMES = [
     id: 'dragon-ball',
     label: 'Dragon Ball',
     light: {
-      panel: '242 232 220',
+      panel: '242, 232, 220',
       border: 'rgba(200, 160, 120, 0.7)',
       accent: '#d17935',
       accentStrong: '#b0571c',
@@ -189,7 +189,7 @@ const THEMES = [
       overlay: 'rgba(230, 214, 198, 0.85)'
     },
     dark: {
-      panel: '30 20 12',
+      panel: '30, 20, 12',
       border: 'rgba(130, 90, 50, 0.6)',
       accent: '#e08b3d',
       accentStrong: '#b66a28',
@@ -202,7 +202,7 @@ const THEMES = [
     id: 'one-punch-man',
     label: 'One Punch Man',
     light: {
-      panel: '240 236 232',
+      panel: '240, 236, 232',
       border: 'rgba(210, 180, 120, 0.7)',
       accent: '#d17d2c',
       accentStrong: '#b55f1a',
@@ -211,7 +211,7 @@ const THEMES = [
       overlay: 'rgba(228, 220, 210, 0.85)'
     },
     dark: {
-      panel: '26 20 16',
+      panel: '26, 20, 16',
       border: 'rgba(120, 80, 50, 0.6)',
       accent: '#e19a3a',
       accentStrong: '#b87426',
@@ -224,7 +224,7 @@ const THEMES = [
     id: 'ergo-proxy',
     label: 'Ergo Proxy',
     light: {
-      panel: '230 232 236',
+      panel: '230, 232, 236',
       border: 'rgba(170, 170, 180, 0.7)',
       accent: '#7a7f8f',
       accentStrong: '#5a5f70',
@@ -233,7 +233,7 @@ const THEMES = [
       overlay: 'rgba(210, 214, 220, 0.85)'
     },
     dark: {
-      panel: '18 20 26',
+      panel: '18, 20, 26',
       border: 'rgba(80, 90, 110, 0.6)',
       accent: '#8a93a8',
       accentStrong: '#66708a',
@@ -246,7 +246,7 @@ const THEMES = [
     id: 'serial-lain',
     label: 'Serial Lain',
     light: {
-      panel: '230 236 238',
+      panel: '230, 236, 238',
       border: 'rgba(160, 180, 190, 0.7)',
       accent: '#6b8b8f',
       accentStrong: '#4f7073',
@@ -255,7 +255,7 @@ const THEMES = [
       overlay: 'rgba(210, 220, 224, 0.85)'
     },
     dark: {
-      panel: '16 22 24',
+      panel: '16, 22, 24',
       border: 'rgba(70, 90, 95, 0.6)',
       accent: '#7fa2a4',
       accentStrong: '#5f8083',
@@ -324,6 +324,7 @@ const opacityRange = document.getElementById('opacity-range');
 const radiusRange = document.getElementById('radius-range');
 const paletteGrid = document.getElementById('palette-grid');
 const themeGrid = document.getElementById('theme-grid');
+const settingsTabs = document.getElementById('settings-tabs');
 const characterInput = document.getElementById('character-input');
 const characterRemoveBtn = document.getElementById('character-remove');
 const timerCharacter = document.getElementById('timer-character');
@@ -467,6 +468,7 @@ const applyTheme = () => {
   document.documentElement.style.setProperty('--primary', themeValues.primary);
   document.documentElement.style.setProperty('--text-muted', themeValues.muted);
   document.documentElement.style.setProperty('--theme-overlay', themeValues.overlay);
+  applyPalette();
 };
 
 const applyWallpaper = () => {
@@ -968,6 +970,18 @@ const handleAutoSaveToggle = (event) => {
   saveState();
 };
 
+const handleSettingsTabClick = (event) => {
+  const target = event.target.closest('.settings-tab');
+  if (!target) return;
+  const section = target.dataset.section;
+  Array.from(settingsTabs.children).forEach((button) => {
+    button.classList.toggle('active', button === target);
+  });
+  document.querySelectorAll('.settings-section').forEach((el) => {
+    el.hidden = el.dataset.section !== section;
+  });
+};
+
 const buildSnapshot = () => ({
   exportedAt: new Date().toISOString(),
   tabs: state.tabs,
@@ -1148,6 +1162,9 @@ const init = () => {
   renderDate();
   renderThemes();
   renderPalettes();
+  document.querySelectorAll('.settings-section').forEach((section) => {
+    section.hidden = section.dataset.section !== 'appearance';
+  });
   createWeekTabs();
   renderTabs();
   renderTimer();
@@ -1184,6 +1201,7 @@ settingsModal.addEventListener('click', (event) => {
     closeSettings();
   }
 });
+settingsTabs.addEventListener('click', handleSettingsTabClick);
 
 themeLightBtn.addEventListener('click', () => setTheme('light'));
 themeDarkBtn.addEventListener('click', () => setTheme('dark'));

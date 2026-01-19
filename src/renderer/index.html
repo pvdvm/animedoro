@@ -131,30 +131,36 @@
           <h3>Ajustes visuais</h3>
           <button class="icon-button" id="settings-close" title="Fechar">✕</button>
         </div>
-        <div class="settings-section">
+        <div class="settings-tabs" id="settings-tabs">
+          <button class="settings-tab active" data-section="appearance">Aparência</button>
+          <button class="settings-tab" data-section="layout">Layout</button>
+          <button class="settings-tab" data-section="media">Mídia</button>
+          <button class="settings-tab" data-section="backup">Backup</button>
+        </div>
+        <div class="settings-section" data-section="appearance">
           <span class="settings-title">Modo de aparência</span>
           <div class="segmented-control">
             <button class="segment" id="theme-light">☀️ Claro</button>
             <button class="segment" id="theme-dark">🌙 Escuro</button>
           </div>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="appearance">
           <span class="settings-title">Temas completos</span>
           <div class="theme-grid" id="theme-grid"></div>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="appearance">
           <span class="settings-title">Paleta de cores</span>
           <div class="palette-grid" id="palette-grid"></div>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="layout">
           <span class="settings-title">Transparência</span>
           <input type="range" id="opacity-range" min="0.6" max="1" step="0.05" />
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="layout">
           <span class="settings-title">Arredondamento</span>
           <input type="range" id="radius-range" min="8" max="24" step="1" />
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="media">
           <span class="settings-title">Personagem do timer</span>
           <label class="file-button">
             Escolher imagem
@@ -162,7 +168,7 @@
           </label>
           <button class="secondary" id="character-remove">Remover</button>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="media">
           <span class="settings-title">Papel de fundo</span>
           <label class="file-button">
             Escolher imagem
@@ -170,7 +176,7 @@
           </label>
           <button class="secondary" id="wallpaper-remove">Remover</button>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="media">
           <span class="settings-title">Som do timer</span>
           <label class="file-button">
             Escolher áudio
@@ -178,14 +184,14 @@
           </label>
           <button class="secondary" id="sound-remove">Remover</button>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="backup">
           <span class="settings-title">Backup automático</span>
           <label class="toggle">
             <input type="checkbox" id="auto-save-toggle" />
             <span>Salvar ao fim do timer</span>
           </label>
         </div>
-        <div class="settings-section">
+        <div class="settings-section" data-section="backup">
           <span class="settings-title">Configurações</span>
           <div class="settings-actions">
             <button class="secondary" id="import-settings">Importar</button>
