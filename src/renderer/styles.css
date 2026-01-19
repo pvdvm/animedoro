@@ -9,6 +9,7 @@
   --accent-strong: #5f7188;
   --primary: #79a6a6;
   --text-muted: #728096;
+  --theme-overlay: rgba(208, 214, 224, 0.85);
   --background-image: none;
   --panel-opacity: 0.92;
   --panel-radius: 14px;
@@ -52,7 +53,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(208, 214, 224, 0.85);
+  background: var(--theme-overlay);
   pointer-events: none;
   z-index: -1;
 }
@@ -241,7 +242,7 @@ body[data-theme='dark'] .add-tab {
   gap: 16px;
   flex: 1;
   justify-content: center;
-  padding-bottom: 140px;
+  padding-bottom: 150px;
 }
 
 .timer-circle {
@@ -318,8 +319,8 @@ body[data-theme='dark'] .step-button {
 
 .timer-character {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
+  bottom: 0;
+  right: 0;
   width: 120px;
   height: 120px;
   display: none;
@@ -697,6 +698,32 @@ body[data-theme='dark'] .settings-section {
 .secondary.danger {
   background: rgba(200, 80, 80, 0.15);
   color: #b63a3a;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.theme-button {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+body[data-theme='dark'] .theme-button {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.theme-button.active {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 
 .palette-grid {

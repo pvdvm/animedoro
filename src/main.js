@@ -32,19 +32,31 @@ app.whenReady().then(() => {
 
 const getBackupPath = () => {
   const baseDir = path.dirname(app.getPath('exe'));
-  return path.join(baseDir, 'animedoro_backup.json');
+  return path.join(baseDir, 'save.json');
 };
 
 ipcMain.handle('save-backup', async (event, payload) => {
   const backupPath = getBackupPath();
-  await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
-  return backupPath;
+  try {
+    await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
+    return backupPath;
+  } catch (error) {
+    const fallbackPath = path.join(app.getPath('userData'), 'save.json');
+    await fs.writeFile(fallbackPath, JSON.stringify(payload, null, 2), 'utf-8');
+    return fallbackPath;
+  }
 });
 
 ipcMain.handle('export-backup', async (event, payload) => {
   const backupPath = getBackupPath();
-  await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
-  return backupPath;
+  try {
+    await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
+    return backupPath;
+  } catch (error) {
+    const fallbackPath = path.join(app.getPath('userData'), 'save.json');
+    await fs.writeFile(fallbackPath, JSON.stringify(payload, null, 2), 'utf-8');
+    return fallbackPath;
+  }
 });
 
 ipcMain.handle('import-backup', async () => {

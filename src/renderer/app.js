@@ -15,7 +15,8 @@ const STORAGE_KEYS = {
   radius: 'animedoro.radius',
   palette: 'animedoro.palette',
   character: 'animedoro.character',
-  autoSave: 'animedoro.autoSave'
+  autoSave: 'animedoro.autoSave',
+  themeId: 'animedoro.themeId'
 };
 
 const WEEKDAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
@@ -41,6 +42,228 @@ const PALETTES = [
   { id: 'sunset', accent: '#c07a61', accentStrong: '#a85f47', primary: '#d9905a' },
   { id: 'sakura', accent: '#b57a9d', accentStrong: '#9b5b83', primary: '#d17fa7' },
   { id: 'matcha', accent: '#6f8a67', accentStrong: '#587053', primary: '#7fb27f' }
+];
+const THEMES = [
+  {
+    id: 'non-non-biyori',
+    label: 'Non Non Biyori',
+    light: {
+      panel: '228 233 240',
+      border: 'rgba(180, 190, 205, 0.7)',
+      accent: '#7c8ea3',
+      accentStrong: '#5f7188',
+      primary: '#79a6a6',
+      muted: '#728096',
+      overlay: 'rgba(208, 214, 224, 0.85)'
+    },
+    dark: {
+      panel: '18 22 35',
+      border: 'rgba(54, 64, 90, 0.5)',
+      accent: '#8fa3bd',
+      accentStrong: '#6d84a1',
+      primary: '#6fa3a8',
+      muted: '#9ca3b7',
+      overlay: 'rgba(14, 18, 28, 0.9)'
+    }
+  },
+  {
+    id: 'another',
+    label: 'Another',
+    light: {
+      panel: '235 230 232',
+      border: 'rgba(180, 160, 170, 0.7)',
+      accent: '#8a4f5c',
+      accentStrong: '#6a2f3c',
+      primary: '#b06b7a',
+      muted: '#7c6c72',
+      overlay: 'rgba(220, 210, 215, 0.85)'
+    },
+    dark: {
+      panel: '18 15 20',
+      border: 'rgba(90, 70, 80, 0.6)',
+      accent: '#b45f6d',
+      accentStrong: '#8f3a4a',
+      primary: '#c36a7a',
+      muted: '#b8a5ad',
+      overlay: 'rgba(10, 8, 12, 0.92)'
+    }
+  },
+  {
+    id: 'evangelion',
+    label: 'Evangelion',
+    light: {
+      panel: '230 236 226',
+      border: 'rgba(150, 170, 150, 0.7)',
+      accent: '#5f7a46',
+      accentStrong: '#405b30',
+      primary: '#6d8f46',
+      muted: '#6b7762',
+      overlay: 'rgba(208, 220, 206, 0.85)'
+    },
+    dark: {
+      panel: '18 24 16',
+      border: 'rgba(70, 95, 60, 0.6)',
+      accent: '#7aa043',
+      accentStrong: '#58792f',
+      primary: '#89b04b',
+      muted: '#a7b6a0',
+      overlay: 'rgba(10, 14, 8, 0.92)'
+    }
+  },
+  {
+    id: 'berserk',
+    label: 'Berserk',
+    light: {
+      panel: '235 230 220',
+      border: 'rgba(160, 140, 120, 0.7)',
+      accent: '#7a5a3a',
+      accentStrong: '#5a3f28',
+      primary: '#8a5f3a',
+      muted: '#7a6a5a',
+      overlay: 'rgba(218, 210, 198, 0.85)'
+    },
+    dark: {
+      panel: '20 16 14',
+      border: 'rgba(80, 60, 50, 0.6)',
+      accent: '#a6734a',
+      accentStrong: '#7a4e2f',
+      primary: '#b07a4d',
+      muted: '#b2a293',
+      overlay: 'rgba(10, 8, 6, 0.92)'
+    }
+  },
+  {
+    id: 'frieren',
+    label: 'Frieren',
+    light: {
+      panel: '230 236 240',
+      border: 'rgba(170, 190, 200, 0.7)',
+      accent: '#6f8fa0',
+      accentStrong: '#4f6f80',
+      primary: '#7ba0b2',
+      muted: '#728896',
+      overlay: 'rgba(210, 220, 230, 0.85)'
+    },
+    dark: {
+      panel: '16 22 28',
+      border: 'rgba(70, 90, 100, 0.6)',
+      accent: '#86a7b8',
+      accentStrong: '#5e7f90',
+      primary: '#8fb2c2',
+      muted: '#a9b6c0',
+      overlay: 'rgba(8, 12, 16, 0.92)'
+    }
+  },
+  {
+    id: 'naruto',
+    label: 'Naruto',
+    light: {
+      panel: '242 234 220',
+      border: 'rgba(200, 170, 130, 0.7)',
+      accent: '#d18a36',
+      accentStrong: '#b56a1e',
+      primary: '#e39a3b',
+      muted: '#8b7760',
+      overlay: 'rgba(228, 216, 198, 0.85)'
+    },
+    dark: {
+      panel: '28 22 14',
+      border: 'rgba(120, 90, 60, 0.6)',
+      accent: '#e09b44',
+      accentStrong: '#b97b30',
+      primary: '#f1a84b',
+      muted: '#c3b19a',
+      overlay: 'rgba(14, 10, 6, 0.92)'
+    }
+  },
+  {
+    id: 'dragon-ball',
+    label: 'Dragon Ball',
+    light: {
+      panel: '242 232 220',
+      border: 'rgba(200, 160, 120, 0.7)',
+      accent: '#d17935',
+      accentStrong: '#b0571c',
+      primary: '#e58b2f',
+      muted: '#8d7560',
+      overlay: 'rgba(230, 214, 198, 0.85)'
+    },
+    dark: {
+      panel: '30 20 12',
+      border: 'rgba(130, 90, 50, 0.6)',
+      accent: '#e08b3d',
+      accentStrong: '#b66a28',
+      primary: '#f09a3a',
+      muted: '#c8b59d',
+      overlay: 'rgba(14, 9, 5, 0.92)'
+    }
+  },
+  {
+    id: 'one-punch-man',
+    label: 'One Punch Man',
+    light: {
+      panel: '240 236 232',
+      border: 'rgba(210, 180, 120, 0.7)',
+      accent: '#d17d2c',
+      accentStrong: '#b55f1a',
+      primary: '#f0b23c',
+      muted: '#8a7a6b',
+      overlay: 'rgba(228, 220, 210, 0.85)'
+    },
+    dark: {
+      panel: '26 20 16',
+      border: 'rgba(120, 80, 50, 0.6)',
+      accent: '#e19a3a',
+      accentStrong: '#b87426',
+      primary: '#f2b93e',
+      muted: '#c0b3a3',
+      overlay: 'rgba(12, 8, 6, 0.92)'
+    }
+  },
+  {
+    id: 'ergo-proxy',
+    label: 'Ergo Proxy',
+    light: {
+      panel: '230 232 236',
+      border: 'rgba(170, 170, 180, 0.7)',
+      accent: '#7a7f8f',
+      accentStrong: '#5a5f70',
+      primary: '#8b93a8',
+      muted: '#70757f',
+      overlay: 'rgba(210, 214, 220, 0.85)'
+    },
+    dark: {
+      panel: '18 20 26',
+      border: 'rgba(80, 90, 110, 0.6)',
+      accent: '#8a93a8',
+      accentStrong: '#66708a',
+      primary: '#9aa3b8',
+      muted: '#b0b7c4',
+      overlay: 'rgba(10, 12, 16, 0.92)'
+    }
+  },
+  {
+    id: 'serial-lain',
+    label: 'Serial Lain',
+    light: {
+      panel: '230 236 238',
+      border: 'rgba(160, 180, 190, 0.7)',
+      accent: '#6b8b8f',
+      accentStrong: '#4f7073',
+      primary: '#7fa7a8',
+      muted: '#6f8083',
+      overlay: 'rgba(210, 220, 224, 0.85)'
+    },
+    dark: {
+      panel: '16 22 24',
+      border: 'rgba(70, 90, 95, 0.6)',
+      accent: '#7fa2a4',
+      accentStrong: '#5f8083',
+      primary: '#89b3b4',
+      muted: '#a8b8b9',
+      overlay: 'rgba(8, 12, 13, 0.92)'
+    }
+  }
 ];
 
 const state = {
@@ -69,7 +292,8 @@ const state = {
   radius: 14,
   palette: 'forest',
   character: null,
-  autoSave: false
+  autoSave: false,
+  themeId: 'non-non-biyori'
 };
 
 const tabsEl = document.getElementById('tabs');
@@ -99,6 +323,7 @@ const themeDarkBtn = document.getElementById('theme-dark');
 const opacityRange = document.getElementById('opacity-range');
 const radiusRange = document.getElementById('radius-range');
 const paletteGrid = document.getElementById('palette-grid');
+const themeGrid = document.getElementById('theme-grid');
 const characterInput = document.getElementById('character-input');
 const characterRemoveBtn = document.getElementById('character-remove');
 const timerCharacter = document.getElementById('timer-character');
@@ -172,6 +397,7 @@ const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.palette, state.palette);
   localStorage.setItem(STORAGE_KEYS.character, state.character || '');
   localStorage.setItem(STORAGE_KEYS.autoSave, state.autoSave ? '1' : '0');
+  localStorage.setItem(STORAGE_KEYS.themeId, state.themeId);
 };
 
 const loadState = () => {
@@ -187,6 +413,7 @@ const loadState = () => {
   const storedPalette = localStorage.getItem(STORAGE_KEYS.palette);
   const storedCharacter = localStorage.getItem(STORAGE_KEYS.character);
   const storedAutoSave = localStorage.getItem(STORAGE_KEYS.autoSave);
+  const storedThemeId = localStorage.getItem(STORAGE_KEYS.themeId);
 
   state.tabs = storedTabs && storedTabs.length ? storedTabs : DEFAULT_TABS;
   state.timers = storedTimers;
@@ -218,6 +445,9 @@ const loadState = () => {
   if (storedAutoSave) {
     state.autoSave = storedAutoSave === '1';
   }
+  if (storedThemeId) {
+    state.themeId = storedThemeId;
+  }
   if (!state.timers[state.activeTabId]) {
     state.timers[state.activeTabId] = 50 * 60;
   }
@@ -228,6 +458,15 @@ const applyTheme = () => {
   document.body.dataset.theme = state.theme;
   themeLightBtn.classList.toggle('active', state.theme === 'light');
   themeDarkBtn.classList.toggle('active', state.theme === 'dark');
+  const theme = THEMES.find((item) => item.id === state.themeId) || THEMES[0];
+  const themeValues = state.theme === 'dark' ? theme.dark : theme.light;
+  document.documentElement.style.setProperty('--panel-bg-rgb', themeValues.panel);
+  document.documentElement.style.setProperty('--panel-border', themeValues.border);
+  document.documentElement.style.setProperty('--accent', themeValues.accent);
+  document.documentElement.style.setProperty('--accent-strong', themeValues.accentStrong);
+  document.documentElement.style.setProperty('--primary', themeValues.primary);
+  document.documentElement.style.setProperty('--text-muted', themeValues.muted);
+  document.documentElement.style.setProperty('--theme-overlay', themeValues.overlay);
 };
 
 const applyWallpaper = () => {
@@ -271,6 +510,27 @@ const renderPalettes = () => {
     paletteGrid.appendChild(button);
   });
   applyPalette();
+};
+
+const renderThemes = () => {
+  themeGrid.innerHTML = '';
+  THEMES.forEach((theme) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-button';
+    button.dataset.themeId = theme.id;
+    button.textContent = theme.label;
+    button.addEventListener('click', () => {
+      state.themeId = theme.id;
+      saveState();
+      applyTheme();
+      renderThemes();
+    });
+    themeGrid.appendChild(button);
+  });
+  Array.from(themeGrid.children).forEach((button) => {
+    button.classList.toggle('active', button.dataset.themeId === state.themeId);
+  });
 };
 
 const applyCharacter = () => {
@@ -716,6 +976,7 @@ const buildSnapshot = () => ({
   stats: state.stats,
   settings: {
     theme: state.theme,
+    themeId: state.themeId,
     wallpaper: state.wallpaper,
     sound: state.sound,
     opacity: state.opacity,
@@ -749,6 +1010,7 @@ const applySnapshot = (snapshot) => {
   state.stats = snapshot.stats || state.stats;
   if (snapshot.settings) {
     state.theme = snapshot.settings.theme || state.theme;
+    state.themeId = snapshot.settings.themeId || state.themeId;
     state.wallpaper = snapshot.settings.wallpaper || null;
     state.sound = snapshot.settings.sound || null;
     state.opacity = snapshot.settings.opacity || state.opacity;
@@ -770,6 +1032,7 @@ const applySnapshot = (snapshot) => {
   applyPalette();
   applyCharacter();
   autoSaveToggle.checked = state.autoSave;
+  renderThemes();
   renderPalettes();
   renderTabs();
   renderTimer();
@@ -792,6 +1055,7 @@ const resetAllSettings = () => {
     lastCompletionDate: null
   };
   state.theme = 'light';
+  state.themeId = 'non-non-biyori';
   state.wallpaper = null;
   state.sound = null;
   state.opacity = 0.92;
@@ -808,6 +1072,7 @@ const resetAllSettings = () => {
   applyPalette();
   applyCharacter();
   autoSaveToggle.checked = state.autoSave;
+  renderThemes();
   renderPalettes();
   renderDate();
   renderTabs();
@@ -881,6 +1146,7 @@ const init = () => {
   applyCharacter();
   autoSaveToggle.checked = state.autoSave;
   renderDate();
+  renderThemes();
   renderPalettes();
   createWeekTabs();
   renderTabs();
@@ -946,5 +1212,6 @@ adjustButtons.forEach((button) => {
 });
 
 timerCircleEl.addEventListener('click', editTimer);
+timerValueEl.addEventListener('click', editTimer);
 
 init();
