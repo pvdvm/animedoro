@@ -3,12 +3,12 @@
   font-family: 'Segoe UI', system-ui, sans-serif;
   background: #d2d2d4;
   color: #4c4c4c;
-  --panel-bg-rgb: 233 233 235;
-  --panel-border: rgba(200, 200, 200, 0.7);
-  --accent: #7a6a62;
-  --accent-strong: #5d514c;
-  --primary: #5aa861;
-  --text-muted: #7d7d7d;
+  --panel-bg-rgb: 228 233 240;
+  --panel-border: rgba(180, 190, 205, 0.7);
+  --accent: #7c8ea3;
+  --accent-strong: #5f7188;
+  --primary: #79a6a6;
+  --text-muted: #728096;
   --background-image: none;
   --panel-opacity: 0.92;
   --panel-radius: 14px;
@@ -20,9 +20,9 @@ body[data-theme='dark'] {
   color: #e7e8ee;
   --panel-bg-rgb: 18 22 35;
   --panel-border: rgba(54, 64, 90, 0.5);
-  --accent: #7f9cff;
-  --accent-strong: #6d8cf0;
-  --primary: #5aa86b;
+  --accent: #8fa3bd;
+  --accent-strong: #6d84a1;
+  --primary: #6fa3a8;
   --text-muted: #9ca3b7;
 }
 
@@ -52,7 +52,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(210, 210, 212, 0.88);
+  background: rgba(208, 214, 224, 0.85);
   pointer-events: none;
   z-index: -1;
 }
@@ -385,7 +385,24 @@ body[data-theme='dark'] .week-tab {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 170px;
+  min-height: 190px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-color: rgba(124, 142, 163, 0.6) transparent;
+}
+
+.history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: rgba(124, 142, 163, 0.6);
+  border-radius: 999px;
+}
+
+body[data-theme='dark'] .history-list::-webkit-scrollbar-thumb {
+  background: rgba(143, 163, 189, 0.5);
 }
 
 .history-item {
@@ -656,6 +673,17 @@ body[data-theme='dark'] .settings-section {
   font-weight: 600;
   width: fit-content;
   font-size: 12px;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.secondary.danger {
+  background: rgba(200, 80, 80, 0.15);
+  color: #b63a3a;
 }
 
 .palette-grid {

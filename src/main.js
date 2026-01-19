@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs/promises');
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -9,7 +10,9 @@ const createWindow = () => {
     minHeight: 650,
     backgroundColor: '#0f1116',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
@@ -25,6 +28,34 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+});
+
+const getBackupPath = () => path.join(app.getPath('userData'), 'animedoro_backup.json');
+
+ipcMain.handle('save-backup', async (event, payload) => {
+  const backupPath = getBackupPath();
+  await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
+  return backupPath;
+});
+
+ipcMain.handle('export-backup', async (event, payload) => {
+  const backupPath = getBackupPath();
+  await fs.writeFile(backupPath, JSON.stringify(payload, null, 2), 'utf-8');
+  return backupPath;
+});
+
+ipcMain.handle('import-backup', async () => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const result = await dialog.showOpenDialog(focusedWindow, {
+    title: 'Importar configurações',
+    filters: [{ name: 'JSON', extensions: ['json'] }],
+    properties: ['openFile']
+  });
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+  const content = await fs.readFile(result.filePaths[0], 'utf-8');
+  return JSON.parse(content);
 });
 
 app.on('window-all-closed', () => {

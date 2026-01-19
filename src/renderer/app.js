@@ -104,6 +104,9 @@ const characterRemoveBtn = document.getElementById('character-remove');
 const timerCharacter = document.getElementById('timer-character');
 const timerCharacterImg = document.getElementById('timer-character-img');
 const autoSaveToggle = document.getElementById('auto-save-toggle');
+const importSettingsBtn = document.getElementById('import-settings');
+const exportSettingsBtn = document.getElementById('export-settings');
+const resetSettingsBtn = document.getElementById('reset-settings');
 const openCalendarBtn = document.getElementById('open-calendar');
 const calendarModal = document.getElementById('calendar-modal');
 const monthGridEl = document.getElementById('month-grid');
@@ -230,8 +233,12 @@ const applyTheme = () => {
 const applyWallpaper = () => {
   if (state.wallpaper) {
     document.documentElement.style.setProperty('--background-image', `url('${state.wallpaper}')`);
+    document.body.style.backgroundImage = `url('${state.wallpaper}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
   } else {
     document.documentElement.style.setProperty('--background-image', 'none');
+    document.body.style.backgroundImage = 'none';
   }
 };
 
@@ -539,7 +546,11 @@ const completeTimer = () => {
   renderTimer();
   playSound();
   if (state.autoSave) {
-    exportSnapshot();
+    if (window.animedoroApi?.saveBackup) {
+      window.animedoroApi.saveBackup(buildSnapshot());
+    } else {
+      exportSnapshot();
+    }
   }
 };
 
@@ -685,31 +696,119 @@ const handleAutoSaveToggle = (event) => {
   saveState();
 };
 
+const buildSnapshot = () => ({
+  exportedAt: new Date().toISOString(),
+  tabs: state.tabs,
+  timers: state.timers,
+  history: state.history,
+  stats: state.stats,
+  settings: {
+    theme: state.theme,
+    wallpaper: state.wallpaper,
+    sound: state.sound,
+    opacity: state.opacity,
+    radius: state.radius,
+    palette: state.palette,
+    character: state.character,
+    autoSave: state.autoSave
+  }
+});
+
 const exportSnapshot = () => {
-  const snapshot = {
-    exportedAt: new Date().toISOString(),
-    tabs: state.tabs,
-    timers: state.timers,
-    history: state.history,
-    stats: state.stats,
-    settings: {
-      theme: state.theme,
-      wallpaper: state.wallpaper,
-      sound: state.sound,
-      opacity: state.opacity,
-      radius: state.radius,
-      palette: state.palette,
-      character: state.character,
-      autoSave: state.autoSave
-    }
-  };
+  const snapshot = buildSnapshot();
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+  if (window.animedoroApi?.exportBackup) {
+    window.animedoroApi.exportBackup(snapshot);
+    return;
+  }
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.download = `animedoro_backup_${Date.now()}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
+};
+
+const applySnapshot = (snapshot) => {
+  if (!snapshot) return;
+  state.tabs = snapshot.tabs || DEFAULT_TABS;
+  state.timers = snapshot.timers || {};
+  state.history = snapshot.history || [];
+  state.stats = snapshot.stats || state.stats;
+  if (snapshot.settings) {
+    state.theme = snapshot.settings.theme || state.theme;
+    state.wallpaper = snapshot.settings.wallpaper || null;
+    state.sound = snapshot.settings.sound || null;
+    state.opacity = snapshot.settings.opacity || state.opacity;
+    state.radius = snapshot.settings.radius || state.radius;
+    state.palette = snapshot.settings.palette || state.palette;
+    state.character = snapshot.settings.character || null;
+    state.autoSave = snapshot.settings.autoSave ?? state.autoSave;
+  }
+  state.tabs = state.tabs.map((tab) => ({
+    ...tab,
+    isLocked: tab.id === 'study' || tab.id === 'anime'
+  }));
+  state.activeTabId = state.tabs[0]?.id || 'study';
+  state.remainingSeconds = state.timers[state.activeTabId] || 50 * 60;
+  saveState();
+  applyTheme();
+  applyWallpaper();
+  applyLayoutSettings();
+  applyPalette();
+  applyCharacter();
+  autoSaveToggle.checked = state.autoSave;
+  renderPalettes();
+  renderTabs();
+  renderTimer();
+  renderHistory();
+  renderStats();
+  renderCards();
+};
+
+const resetAllSettings = () => {
+  localStorage.clear();
+  state.tabs = DEFAULT_TABS.map((tab) => ({ ...tab, isLocked: true }));
+  state.timers = { study: 50 * 60, anime: 25 * 60 };
+  state.history = [];
+  state.stats = {
+    episodes: 0,
+    animeMinutes: 0,
+    studyMinutes: 0,
+    totalMinutes: 0,
+    streak: 0,
+    lastCompletionDate: null
+  };
+  state.theme = 'light';
+  state.wallpaper = null;
+  state.sound = null;
+  state.opacity = 0.92;
+  state.radius = 14;
+  state.palette = 'forest';
+  state.character = null;
+  state.autoSave = false;
+  state.activeTabId = 'study';
+  state.remainingSeconds = state.timers[state.activeTabId];
+  saveState();
+  applyTheme();
+  applyWallpaper();
+  applyLayoutSettings();
+  applyPalette();
+  applyCharacter();
+  autoSaveToggle.checked = state.autoSave;
+  renderPalettes();
+  renderDate();
+  renderTabs();
+  renderTimer();
+  renderHistory();
+  renderStats();
+  renderCards();
+};
+
+const handleImportSettings = async () => {
+  if (!window.animedoroApi?.importBackup) return;
+  const snapshot = await window.animedoroApi.importBackup();
+  applySnapshot(snapshot);
 };
 
 const removeTab = (tabId) => {
@@ -819,6 +918,9 @@ radiusRange.addEventListener('input', handleRadiusChange);
 characterInput.addEventListener('change', handleCharacterChange);
 characterRemoveBtn.addEventListener('click', removeCharacter);
 autoSaveToggle.addEventListener('change', handleAutoSaveToggle);
+importSettingsBtn.addEventListener('click', handleImportSettings);
+exportSettingsBtn.addEventListener('click', exportSnapshot);
+resetSettingsBtn.addEventListener('click', resetAllSettings);
 
 startPauseBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
