@@ -3,20 +3,22 @@
   font-family: 'Segoe UI', system-ui, sans-serif;
   background: #d2d2d4;
   color: #4c4c4c;
-  --panel-bg: rgba(233, 233, 235, 0.92);
+  --panel-bg-rgb: 233 233 235;
   --panel-border: rgba(200, 200, 200, 0.7);
   --accent: #7a6a62;
   --accent-strong: #5d514c;
   --primary: #5aa861;
   --text-muted: #7d7d7d;
   --background-image: none;
+  --panel-opacity: 0.92;
+  --panel-radius: 14px;
 }
 
 body[data-theme='dark'] {
   color-scheme: dark;
   background: #0b0f1a;
   color: #e7e8ee;
-  --panel-bg: rgba(18, 22, 35, 0.82);
+  --panel-bg-rgb: 18 22 35;
   --panel-border: rgba(54, 64, 90, 0.5);
   --accent: #7f9cff;
   --accent-strong: #6d8cf0;
@@ -41,7 +43,7 @@ body::before {
   background-image: var(--background-image);
   background-size: cover;
   background-position: center;
-  opacity: 0.65;
+  opacity: 0.75;
   pointer-events: none;
   z-index: -2;
 }
@@ -63,15 +65,18 @@ body[data-theme='dark']::after {
 .app-shell {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  padding: 20px 28px 28px;
-  gap: 20px;
+  min-height: 100vh;
+  padding: 20px 28px 32px;
+  gap: 18px;
 }
 
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .brand {
@@ -114,16 +119,18 @@ body[data-theme='dark'] .icon-button {
 
 .main-grid {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 320px 520px;
   gap: 18px;
-  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .panel {
-  background: var(--panel-bg);
+  background: rgba(var(--panel-bg-rgb), var(--panel-opacity));
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: var(--panel-radius);
+  padding: 14px;
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(8px);
 }
@@ -131,7 +138,7 @@ body[data-theme='dark'] .icon-button {
 .timer-panel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .tab-row {
@@ -176,8 +183,8 @@ body[data-theme='dark'] .tab {
 }
 
 .add-tab {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   border: none;
   background: rgba(255, 255, 255, 0.65);
@@ -194,14 +201,14 @@ body[data-theme='dark'] .add-tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   flex: 1;
   justify-content: center;
 }
 
 .timer-circle {
-  width: 210px;
-  height: 210px;
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
   border: 2px solid rgba(122, 106, 98, 0.35);
   display: flex;
@@ -210,7 +217,7 @@ body[data-theme='dark'] .add-tab {
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 body[data-theme='dark'] .timer-circle {
@@ -218,7 +225,7 @@ body[data-theme='dark'] .timer-circle {
 }
 
 .timer-value {
-  font-size: 44px;
+  font-size: 40px;
   font-weight: 600;
 }
 
@@ -231,7 +238,7 @@ body[data-theme='dark'] .timer-circle {
 
 .timer-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -239,7 +246,7 @@ body[data-theme='dark'] .timer-circle {
 .secondary,
 .step-button {
   border: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
   color: inherit;
@@ -263,7 +270,7 @@ body[data-theme='dark'] .step-button {
 }
 
 .step-button {
-  width: 40px;
+  width: 38px;
 }
 
 .timer-meta {
@@ -291,14 +298,14 @@ body[data-theme='dark'] .step-button {
 
 .diary-date {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .week-tabs {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .week-tab {
@@ -309,49 +316,66 @@ body[data-theme='dark'] .step-button {
   border-radius: 8px;
   font-weight: 600;
   color: var(--text-muted);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.week-tab.active {
+  border-color: var(--accent);
+  color: var(--accent-strong);
 }
 
 body[data-theme='dark'] .week-tab {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.history-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  min-height: 180px;
-}
-
-.history-column {
+.history-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.65);
-  border-radius: 10px;
-  min-height: 160px;
-}
-
-body[data-theme='dark'] .history-column {
-  background: rgba(255, 255, 255, 0.04);
+  gap: 8px;
+  min-height: 170px;
 }
 
 .history-item {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.85);
-  padding: 6px 8px;
-  border-radius: 8px;
-  font-size: 11px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  justify-content: space-between;
 }
 
 body[data-theme='dark'] .history-item {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.history-item span {
+.history-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.history-icon {
+  font-size: 16px;
+}
+
+.history-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-meta span {
   color: var(--text-muted);
+  font-size: 11px;
+}
+
+.history-duration {
+  font-weight: 600;
+  color: var(--accent-strong);
 }
 
 .stats {
@@ -392,6 +416,9 @@ body[data-theme='dark'] .history-item {
   cursor: pointer;
   border: 1px solid transparent;
   min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 body[data-theme='dark'] .card {
@@ -405,12 +432,18 @@ body[data-theme='dark'] .card {
 .card-title {
   font-size: 12px;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-icon {
+  font-size: 14px;
 }
 
 .card-value {
   font-size: 16px;
   font-weight: 600;
-  margin-top: 6px;
 }
 
 .modal {
@@ -441,7 +474,8 @@ body[data-theme='dark'] .modal-content {
   background: #161a27;
 }
 
-.modal-content input {
+.modal-content input,
+.modal-content input[type='range'] {
   background: rgba(255, 255, 255, 0.9);
   border: none;
   padding: 8px;
@@ -449,7 +483,8 @@ body[data-theme='dark'] .modal-content {
   color: inherit;
 }
 
-body[data-theme='dark'] .modal-content input {
+body[data-theme='dark'] .modal-content input,
+body[data-theme='dark'] .modal-content input[type='range'] {
   background: rgba(255, 255, 255, 0.08);
 }
 

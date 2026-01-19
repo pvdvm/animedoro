@@ -10,7 +10,9 @@ const STORAGE_KEYS = {
   stats: 'animedoro.stats',
   theme: 'animedoro.theme',
   wallpaper: 'animedoro.wallpaper',
-  sound: 'animedoro.sound'
+  sound: 'animedoro.sound',
+  opacity: 'animedoro.opacity',
+  radius: 'animedoro.radius'
 };
 
 const WEEKDAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
@@ -49,9 +51,12 @@ const state = {
   intervalId: null,
   selectedMonth: new Date().getMonth(),
   selectedYear: new Date().getFullYear(),
+  selectedWeekday: (new Date().getDay() + 6) % 7,
   theme: 'light',
   wallpaper: null,
-  sound: null
+  sound: null,
+  opacity: 0.92,
+  radius: 14
 };
 
 const tabsEl = document.getElementById('tabs');
@@ -78,6 +83,8 @@ const wallpaperRemoveBtn = document.getElementById('wallpaper-remove');
 const soundRemoveBtn = document.getElementById('sound-remove');
 const themeLightBtn = document.getElementById('theme-light');
 const themeDarkBtn = document.getElementById('theme-dark');
+const opacityRange = document.getElementById('opacity-range');
+const radiusRange = document.getElementById('radius-range');
 const openCalendarBtn = document.getElementById('open-calendar');
 const calendarModal = document.getElementById('calendar-modal');
 const monthGridEl = document.getElementById('month-grid');
@@ -103,6 +110,15 @@ const formatTime = (seconds) => {
     .padStart(2, '0')}`;
 };
 
+const hashString = (value) =>
+  Array.from(value).reduce((total, char) => total + char.charCodeAt(0), 0);
+
+const resolveTabIcon = (tab) => {
+  if (tab.icon) return tab.icon;
+  const index = hashString(tab.id) % FALLBACK_ICONS.length;
+  return FALLBACK_ICONS[index];
+};
+
 const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.tabs, JSON.stringify(state.tabs));
   localStorage.setItem(STORAGE_KEYS.timers, JSON.stringify(state.timers));
@@ -111,6 +127,8 @@ const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.theme, state.theme);
   localStorage.setItem(STORAGE_KEYS.wallpaper, state.wallpaper || '');
   localStorage.setItem(STORAGE_KEYS.sound, state.sound || '');
+  localStorage.setItem(STORAGE_KEYS.opacity, String(state.opacity));
+  localStorage.setItem(STORAGE_KEYS.radius, String(state.radius));
 };
 
 const loadState = () => {
@@ -121,6 +139,8 @@ const loadState = () => {
   const storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
   const storedWallpaper = localStorage.getItem(STORAGE_KEYS.wallpaper);
   const storedSound = localStorage.getItem(STORAGE_KEYS.sound);
+  const storedOpacity = localStorage.getItem(STORAGE_KEYS.opacity);
+  const storedRadius = localStorage.getItem(STORAGE_KEYS.radius);
 
   state.tabs = storedTabs && storedTabs.length ? storedTabs : DEFAULT_TABS;
   state.timers = storedTimers;
@@ -136,6 +156,12 @@ const loadState = () => {
   }
   if (storedSound) {
     state.sound = storedSound || null;
+  }
+  if (storedOpacity) {
+    state.opacity = Number(storedOpacity) || state.opacity;
+  }
+  if (storedRadius) {
+    state.radius = Number(storedRadius) || state.radius;
   }
   if (!state.timers[state.activeTabId]) {
     state.timers[state.activeTabId] = 50 * 60;
@@ -157,12 +183,19 @@ const applyWallpaper = () => {
   }
 };
 
+const applyLayoutSettings = () => {
+  document.documentElement.style.setProperty('--panel-opacity', state.opacity);
+  document.documentElement.style.setProperty('--panel-radius', `${state.radius}px`);
+  opacityRange.value = state.opacity;
+  radiusRange.value = state.radius;
+};
+
 const renderTabs = () => {
   tabsEl.innerHTML = '';
   state.tabs.forEach((tab) => {
     const button = document.createElement('button');
     button.className = `tab ${tab.id === state.activeTabId ? 'active' : ''}`;
-    const icon = tab.icon || FALLBACK_ICONS[Math.floor(Math.random() * FALLBACK_ICONS.length)];
+    const icon = resolveTabIcon(tab);
     button.innerHTML = `<span class="tab-icon">${icon}</span>${tab.label}`;
     button.addEventListener('click', () => selectTab(tab.id));
     tabsEl.appendChild(button);
@@ -179,11 +212,22 @@ const renderTimer = () => {
 
 const createWeekTabs = () => {
   weekTabsEl.innerHTML = '';
-  WEEKDAYS.forEach((day) => {
-    const tab = document.createElement('div');
-    tab.className = 'week-tab';
+  WEEKDAYS.forEach((day, index) => {
+    const tab = document.createElement('button');
+    tab.className = `week-tab ${index === state.selectedWeekday ? 'active' : ''}`;
     tab.textContent = day;
+    tab.addEventListener('click', () => {
+      state.selectedWeekday = index;
+      renderWeekTabs();
+      renderHistory();
+    });
     weekTabsEl.appendChild(tab);
+  });
+};
+
+const renderWeekTabs = () => {
+  Array.from(weekTabsEl.children).forEach((tab, index) => {
+    tab.classList.toggle('active', index === state.selectedWeekday);
   });
 };
 
@@ -196,36 +240,34 @@ const filterHistoryByMonth = () =>
 const renderHistory = () => {
   historyEl.innerHTML = '';
   const monthHistory = filterHistoryByMonth();
-  const grouped = Array.from({ length: 7 }, () => []);
+  const filtered = monthHistory.filter((entry) => entry.weekday === state.selectedWeekday);
 
-  monthHistory.forEach((entry) => {
-    const date = new Date(entry.timestamp);
-    const dayIndex = (date.getDay() + 6) % 7;
-    grouped[dayIndex].push(entry);
-  });
+  if (filtered.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'history-item';
+    empty.textContent = 'Sem registros para este dia.';
+    historyEl.appendChild(empty);
+    return;
+  }
 
-  grouped.forEach((entries) => {
-    const column = document.createElement('div');
-    column.className = 'history-column';
-    if (entries.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'history-item';
-      empty.textContent = 'Sem registros';
-      column.appendChild(empty);
-    } else {
-      entries.forEach((entry) => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `
-          <strong>${entry.label}</strong>
-          <span>${entry.time}</span>
-          <span>${entry.duration}</span>
-        `;
-        column.appendChild(item);
-      });
-    }
-    historyEl.appendChild(column);
-  });
+  filtered
+    .slice()
+    .reverse()
+    .forEach((entry) => {
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `
+        <div class="history-main">
+          <span class="history-icon">${entry.icon}</span>
+          <div class="history-meta">
+            <strong>${entry.label}</strong>
+            <span>${entry.dateText} • ${entry.time}</span>
+          </div>
+        </div>
+        <div class="history-duration">${entry.duration}</div>
+      `;
+      historyEl.appendChild(item);
+    });
 };
 
 const renderStats = () => {
@@ -242,10 +284,11 @@ const renderCards = () => {
     const totalMinutes = state.history
       .filter((entry) => entry.tabId === tab.id)
       .reduce((total, entry) => total + entry.minutes, 0);
+    const icon = resolveTabIcon(tab);
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
-      <div class="card-title">${tab.label}</div>
+      <div class="card-title"><span class="card-icon">${icon}</span>${tab.label}</div>
       <div class="card-value">${formatMinutes(totalMinutes)}</div>
     `;
     card.addEventListener('click', () => selectTab(tab.id));
@@ -254,7 +297,13 @@ const renderCards = () => {
 };
 
 const renderDate = () => {
-  currentDateEl.textContent = `${MONTHS[state.selectedMonth]} de ${state.selectedYear}`;
+  const now = new Date();
+  const weekday = now.toLocaleDateString('pt-BR', { weekday: 'long' });
+  const day = now.toLocaleDateString('pt-BR', { day: '2-digit' });
+  const month = MONTHS[state.selectedMonth];
+  const year = state.selectedYear;
+  const time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  currentDateEl.textContent = `${weekday}, ${day} de ${month} de ${year} • ${time}`;
 };
 
 const renderCalendar = () => {
@@ -342,13 +391,17 @@ const completeTimer = () => {
   const tab = state.tabs.find((item) => item.id === state.activeTabId);
   const minutes = Math.floor(state.timers[state.activeTabId] / 60);
   const timestamp = new Date();
+  const icon = tab ? resolveTabIcon(tab) : '⏱️';
   const entry = {
     tabId: state.activeTabId,
     label: tab ? tab.label : 'Timer',
+    icon,
     minutes,
-    duration: formatTime(state.timers[state.activeTabId]),
+    duration: `${minutes} min`,
     time: timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-    timestamp: timestamp.toISOString()
+    dateText: timestamp.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+    timestamp: timestamp.toISOString(),
+    weekday: (timestamp.getDay() + 6) % 7
   };
 
   state.history.push(entry);
@@ -455,10 +508,23 @@ const removeSound = () => {
   soundInput.value = '';
 };
 
+const handleOpacityChange = (event) => {
+  state.opacity = Number(event.target.value);
+  saveState();
+  applyLayoutSettings();
+};
+
+const handleRadiusChange = (event) => {
+  state.radius = Number(event.target.value);
+  saveState();
+  applyLayoutSettings();
+};
+
 const init = () => {
   loadState();
   applyTheme();
   applyWallpaper();
+  applyLayoutSettings();
   createWeekTabs();
   renderDate();
   renderTabs();
@@ -500,6 +566,8 @@ wallpaperInput.addEventListener('change', handleWallpaperChange);
 soundInput.addEventListener('change', handleSoundChange);
 wallpaperRemoveBtn.addEventListener('click', removeWallpaper);
 soundRemoveBtn.addEventListener('click', removeSound);
+opacityRange.addEventListener('input', handleOpacityChange);
+radiusRange.addEventListener('input', handleRadiusChange);
 
 startPauseBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
