@@ -12,20 +12,12 @@
       <header class="app-header">
         <div class="brand">
           <span class="brand-title">Animedoro Pro</span>
-          <span class="brand-subtitle">Estação Non Non Biyori</span>
+          <span class="brand-subtitle">Estação</span>
         </div>
         <div class="header-actions">
-          <button class="icon-button" id="theme-toggle" title="Alternar tema">
-            <span>☀️</span>
+          <button class="icon-button" id="settings-open" title="Configurações">
+            ⚙️
           </button>
-          <label class="icon-button" title="Papel de fundo">
-            🖼️
-            <input type="file" id="wallpaper-input" accept="image/*" hidden />
-          </label>
-          <label class="icon-button" title="Som do timer">
-            🎵
-            <input type="file" id="sound-input" accept="audio/*" hidden />
-          </label>
         </div>
       </header>
 
@@ -120,6 +112,38 @@
         <div class="month-grid" id="month-grid"></div>
         <div class="modal-actions">
           <button class="secondary" id="close-calendar">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="settings-modal">
+      <div class="modal-content settings-content">
+        <div class="settings-header">
+          <h3>Ajustes visuais</h3>
+          <button class="icon-button" id="settings-close" title="Fechar">✕</button>
+        </div>
+        <div class="settings-section">
+          <span class="settings-title">Modo de aparência</span>
+          <div class="segmented-control">
+            <button class="segment" id="theme-light">☀️ Claro</button>
+            <button class="segment" id="theme-dark">🌙 Escuro</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <span class="settings-title">Papel de fundo</span>
+          <label class="file-button">
+            Escolher imagem
+            <input type="file" id="wallpaper-input" accept="image/*" hidden />
+          </label>
+          <button class="secondary" id="wallpaper-remove">Remover</button>
+        </div>
+        <div class="settings-section">
+          <span class="settings-title">Som do timer</span>
+          <label class="file-button">
+            Escolher áudio
+            <input type="file" id="sound-input" accept="audio/*" hidden />
+          </label>
+          <button class="secondary" id="sound-remove">Remover</button>
         </div>
       </div>
     </div>

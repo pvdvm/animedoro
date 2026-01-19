@@ -1,6 +1,6 @@
 const DEFAULT_TABS = [
-  { id: 'study', label: 'Estudo', type: 'study' },
-  { id: 'anime', label: 'Anime', type: 'anime' }
+  { id: 'study', label: 'Estudo', type: 'study', icon: '📘' },
+  { id: 'anime', label: 'Anime', type: 'anime', icon: '🎬' }
 ];
 
 const STORAGE_KEYS = {
@@ -28,6 +28,8 @@ const MONTHS = [
   'Novembro',
   'Dezembro'
 ];
+
+const FALLBACK_ICONS = ['📗', '📙', '📝', '🎯', '⭐', '🧠', '🎧', '📖'];
 
 const state = {
   tabs: [],
@@ -67,9 +69,15 @@ const historyEl = document.getElementById('history');
 const cardsEl = document.getElementById('cards');
 const currentDateEl = document.getElementById('current-date');
 const weekTabsEl = document.getElementById('week-tabs');
-const themeToggleBtn = document.getElementById('theme-toggle');
+const settingsOpenBtn = document.getElementById('settings-open');
+const settingsModal = document.getElementById('settings-modal');
+const settingsCloseBtn = document.getElementById('settings-close');
 const wallpaperInput = document.getElementById('wallpaper-input');
 const soundInput = document.getElementById('sound-input');
+const wallpaperRemoveBtn = document.getElementById('wallpaper-remove');
+const soundRemoveBtn = document.getElementById('sound-remove');
+const themeLightBtn = document.getElementById('theme-light');
+const themeDarkBtn = document.getElementById('theme-dark');
 const openCalendarBtn = document.getElementById('open-calendar');
 const calendarModal = document.getElementById('calendar-modal');
 const monthGridEl = document.getElementById('month-grid');
@@ -137,7 +145,8 @@ const loadState = () => {
 
 const applyTheme = () => {
   document.body.dataset.theme = state.theme;
-  themeToggleBtn.textContent = state.theme === 'dark' ? '🌙' : '☀️';
+  themeLightBtn.classList.toggle('active', state.theme === 'light');
+  themeDarkBtn.classList.toggle('active', state.theme === 'dark');
 };
 
 const applyWallpaper = () => {
@@ -153,7 +162,8 @@ const renderTabs = () => {
   state.tabs.forEach((tab) => {
     const button = document.createElement('button');
     button.className = `tab ${tab.id === state.activeTabId ? 'active' : ''}`;
-    button.textContent = tab.label;
+    const icon = tab.icon || FALLBACK_ICONS[Math.floor(Math.random() * FALLBACK_ICONS.length)];
+    button.innerHTML = `<span class="tab-icon">${icon}</span>${tab.label}`;
     button.addEventListener('click', () => selectTab(tab.id));
     tabsEl.appendChild(button);
   });
@@ -378,7 +388,8 @@ const saveNewTab = () => {
   const label = newTabInput.value.trim();
   if (!label) return;
   const id = `${label.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
-  state.tabs.push({ id, label, type: 'custom' });
+  const icon = FALLBACK_ICONS[state.tabs.length % FALLBACK_ICONS.length];
+  state.tabs.push({ id, label, type: 'custom', icon });
   state.timers[id] = state.remainingSeconds;
   saveState();
   renderTabs();
@@ -394,8 +405,16 @@ const closeCalendar = () => {
   calendarModal.classList.remove('open');
 };
 
-const toggleTheme = () => {
-  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+const openSettings = () => {
+  settingsModal.classList.add('open');
+};
+
+const closeSettings = () => {
+  settingsModal.classList.remove('open');
+};
+
+const setTheme = (theme) => {
+  state.theme = theme;
   saveState();
   applyTheme();
 };
@@ -412,6 +431,13 @@ const handleWallpaperChange = (event) => {
   reader.readAsDataURL(file);
 };
 
+const removeWallpaper = () => {
+  state.wallpaper = null;
+  saveState();
+  applyWallpaper();
+  wallpaperInput.value = '';
+};
+
 const handleSoundChange = (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -421,6 +447,12 @@ const handleSoundChange = (event) => {
     saveState();
   };
   reader.readAsDataURL(file);
+};
+
+const removeSound = () => {
+  state.sound = null;
+  saveState();
+  soundInput.value = '';
 };
 
 const init = () => {
@@ -454,9 +486,20 @@ calendarModal.addEventListener('click', (event) => {
   }
 });
 
-themeToggleBtn.addEventListener('click', toggleTheme);
+settingsOpenBtn.addEventListener('click', openSettings);
+settingsCloseBtn.addEventListener('click', closeSettings);
+settingsModal.addEventListener('click', (event) => {
+  if (event.target === settingsModal) {
+    closeSettings();
+  }
+});
+
+themeLightBtn.addEventListener('click', () => setTheme('light'));
+themeDarkBtn.addEventListener('click', () => setTheme('dark'));
 wallpaperInput.addEventListener('change', handleWallpaperChange);
 soundInput.addEventListener('change', handleSoundChange);
+wallpaperRemoveBtn.addEventListener('click', removeWallpaper);
+soundRemoveBtn.addEventListener('click', removeSound);
 
 startPauseBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
