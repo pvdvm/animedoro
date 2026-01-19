@@ -119,9 +119,9 @@ body[data-theme='dark'] .icon-button {
 
 .main-grid {
   display: grid;
-  grid-template-columns: 360px 560px;
+  grid-template-columns: 390px 590px;
   gap: 18px;
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0 auto;
   width: 100%;
 }
@@ -244,8 +244,8 @@ body[data-theme='dark'] .add-tab {
 }
 
 .timer-circle {
-  width: 190px;
-  height: 190px;
+  width: 210px;
+  height: 210px;
   border-radius: 50%;
   border: 2px solid rgba(122, 106, 98, 0.35);
   display: flex;
@@ -319,8 +319,8 @@ body[data-theme='dark'] .step-button {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   display: none;
 }
 
@@ -385,8 +385,8 @@ body[data-theme='dark'] .week-tab {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 190px;
-  max-height: 240px;
+  min-height: 210px;
+  max-height: 280px;
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-color: rgba(124, 142, 163, 0.6) transparent;
@@ -465,6 +465,13 @@ body[data-theme='dark'] .history-item {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  border-bottom: 1px dashed rgba(124, 142, 163, 0.4);
+  padding-bottom: 8px;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .stat-label {

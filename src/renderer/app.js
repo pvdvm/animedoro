@@ -288,6 +288,7 @@ const renderTabs = () => {
   state.tabs.forEach((tab) => {
     const button = document.createElement('button');
     button.className = `tab ${tab.id === state.activeTabId ? 'active' : ''}`;
+    button.dataset.tabId = tab.id;
     const icon = resolveTabIcon(tab);
     button.appendChild(createIconElement(icon, 'tab-icon'));
     const label = document.createElement('span');
@@ -391,6 +392,14 @@ const renderStats = () => {
   statStreak.textContent = `${state.stats.streak} dias`;
 };
 
+const scrollTabIntoView = (tabId) => {
+  const tabButton = tabsEl.querySelector(`[data-tab-id="${tabId}"]`);
+  if (!tabButton) return;
+  const offset =
+    tabButton.offsetLeft - tabsEl.clientWidth / 2 + tabButton.clientWidth / 2;
+  tabsEl.scrollTo({ left: Math.max(0, offset), behavior: 'smooth' });
+};
+
 const renderCards = () => {
   cardsEl.innerHTML = '';
   state.tabs.forEach((tab) => {
@@ -411,7 +420,10 @@ const renderCards = () => {
     value.textContent = formatMinutes(totalMinutes);
     card.appendChild(title);
     card.appendChild(value);
-    card.addEventListener('click', () => selectTab(tab.id));
+    card.addEventListener('click', () => {
+      selectTab(tab.id);
+      scrollTabIntoView(tab.id);
+    });
     cardsEl.appendChild(card);
   });
 };
