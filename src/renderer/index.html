@@ -42,6 +42,9 @@
               <button class="step-button" data-adjust="5">+5</button>
             </div>
             <div class="timer-meta" id="timer-meta"></div>
+            <div class="timer-character" id="timer-character">
+              <img id="timer-character-img" alt="Personagem" />
+            </div>
           </div>
         </section>
 
@@ -99,6 +102,12 @@
         <h3>Criar nova aba</h3>
         <p>Nome do novo timer:</p>
         <input type="text" id="new-tab-name" placeholder="Ex: Redação" />
+        <p>Ícone (URL ou arquivo):</p>
+        <input type="text" id="new-tab-icon-url" placeholder="https://..." />
+        <label class="file-button">
+          Enviar ícone
+          <input type="file" id="new-tab-icon-file" accept="image/*" hidden />
+        </label>
         <div class="modal-actions">
           <button class="secondary" id="cancel-modal">Cancelar</button>
           <button class="primary" id="save-modal">Salvar</button>
@@ -130,12 +139,24 @@
           </div>
         </div>
         <div class="settings-section">
+          <span class="settings-title">Paleta de cores</span>
+          <div class="palette-grid" id="palette-grid"></div>
+        </div>
+        <div class="settings-section">
           <span class="settings-title">Transparência</span>
           <input type="range" id="opacity-range" min="0.6" max="1" step="0.05" />
         </div>
         <div class="settings-section">
           <span class="settings-title">Arredondamento</span>
           <input type="range" id="radius-range" min="8" max="24" step="1" />
+        </div>
+        <div class="settings-section">
+          <span class="settings-title">Personagem do timer</span>
+          <label class="file-button">
+            Escolher imagem
+            <input type="file" id="character-input" accept="image/*" hidden />
+          </label>
+          <button class="secondary" id="character-remove">Remover</button>
         </div>
         <div class="settings-section">
           <span class="settings-title">Papel de fundo</span>
@@ -152,6 +173,13 @@
             <input type="file" id="sound-input" accept="audio/*" hidden />
           </label>
           <button class="secondary" id="sound-remove">Remover</button>
+        </div>
+        <div class="settings-section">
+          <span class="settings-title">Backup automático</span>
+          <label class="toggle">
+            <input type="checkbox" id="auto-save-toggle" />
+            <span>Salvar ao fim do timer</span>
+          </label>
         </div>
       </div>
     </div>

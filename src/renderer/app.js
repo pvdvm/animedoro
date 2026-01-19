@@ -12,7 +12,10 @@ const STORAGE_KEYS = {
   wallpaper: 'animedoro.wallpaper',
   sound: 'animedoro.sound',
   opacity: 'animedoro.opacity',
-  radius: 'animedoro.radius'
+  radius: 'animedoro.radius',
+  palette: 'animedoro.palette',
+  character: 'animedoro.character',
+  autoSave: 'animedoro.autoSave'
 };
 
 const WEEKDAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
@@ -32,6 +35,13 @@ const MONTHS = [
 ];
 
 const FALLBACK_ICONS = ['📗', '📙', '📝', '🎯', '⭐', '🧠', '🎧', '📖'];
+const PALETTES = [
+  { id: 'forest', accent: '#7a6a62', accentStrong: '#5d514c', primary: '#5aa861' },
+  { id: 'sky', accent: '#6f8fb3', accentStrong: '#54779e', primary: '#5a9bd6' },
+  { id: 'sunset', accent: '#c07a61', accentStrong: '#a85f47', primary: '#d9905a' },
+  { id: 'sakura', accent: '#b57a9d', accentStrong: '#9b5b83', primary: '#d17fa7' },
+  { id: 'matcha', accent: '#6f8a67', accentStrong: '#587053', primary: '#7fb27f' }
+];
 
 const state = {
   tabs: [],
@@ -56,7 +66,10 @@ const state = {
   wallpaper: null,
   sound: null,
   opacity: 0.92,
-  radius: 14
+  radius: 14,
+  palette: 'forest',
+  character: null,
+  autoSave: false
 };
 
 const tabsEl = document.getElementById('tabs');
@@ -85,6 +98,12 @@ const themeLightBtn = document.getElementById('theme-light');
 const themeDarkBtn = document.getElementById('theme-dark');
 const opacityRange = document.getElementById('opacity-range');
 const radiusRange = document.getElementById('radius-range');
+const paletteGrid = document.getElementById('palette-grid');
+const characterInput = document.getElementById('character-input');
+const characterRemoveBtn = document.getElementById('character-remove');
+const timerCharacter = document.getElementById('timer-character');
+const timerCharacterImg = document.getElementById('timer-character-img');
+const autoSaveToggle = document.getElementById('auto-save-toggle');
 const openCalendarBtn = document.getElementById('open-calendar');
 const calendarModal = document.getElementById('calendar-modal');
 const monthGridEl = document.getElementById('month-grid');
@@ -95,6 +114,9 @@ const statAnimeTime = document.getElementById('stat-anime-time');
 const statStudyTime = document.getElementById('stat-study-time');
 const statStreak = document.getElementById('stat-streak');
 const statTotal = document.getElementById('stat-total');
+const newTabIconUrl = document.getElementById('new-tab-icon-url');
+const newTabIconFile = document.getElementById('new-tab-icon-file');
+let newTabIconData = '';
 
 const formatMinutes = (minutes) => {
   const hours = Math.floor(minutes / 60);
@@ -119,6 +141,21 @@ const resolveTabIcon = (tab) => {
   return FALLBACK_ICONS[index];
 };
 
+const createIconElement = (icon, className) => {
+  const isImage = icon.startsWith('data:') || icon.startsWith('http');
+  if (isImage) {
+    const img = document.createElement('img');
+    img.src = icon;
+    img.alt = '';
+    img.className = className;
+    return img;
+  }
+  const span = document.createElement('span');
+  span.className = className;
+  span.textContent = icon;
+  return span;
+};
+
 const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.tabs, JSON.stringify(state.tabs));
   localStorage.setItem(STORAGE_KEYS.timers, JSON.stringify(state.timers));
@@ -129,6 +166,9 @@ const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.sound, state.sound || '');
   localStorage.setItem(STORAGE_KEYS.opacity, String(state.opacity));
   localStorage.setItem(STORAGE_KEYS.radius, String(state.radius));
+  localStorage.setItem(STORAGE_KEYS.palette, state.palette);
+  localStorage.setItem(STORAGE_KEYS.character, state.character || '');
+  localStorage.setItem(STORAGE_KEYS.autoSave, state.autoSave ? '1' : '0');
 };
 
 const loadState = () => {
@@ -141,6 +181,9 @@ const loadState = () => {
   const storedSound = localStorage.getItem(STORAGE_KEYS.sound);
   const storedOpacity = localStorage.getItem(STORAGE_KEYS.opacity);
   const storedRadius = localStorage.getItem(STORAGE_KEYS.radius);
+  const storedPalette = localStorage.getItem(STORAGE_KEYS.palette);
+  const storedCharacter = localStorage.getItem(STORAGE_KEYS.character);
+  const storedAutoSave = localStorage.getItem(STORAGE_KEYS.autoSave);
 
   state.tabs = storedTabs && storedTabs.length ? storedTabs : DEFAULT_TABS;
   state.timers = storedTimers;
@@ -162,6 +205,15 @@ const loadState = () => {
   }
   if (storedRadius) {
     state.radius = Number(storedRadius) || state.radius;
+  }
+  if (storedPalette) {
+    state.palette = storedPalette;
+  }
+  if (storedCharacter) {
+    state.character = storedCharacter || null;
+  }
+  if (storedAutoSave) {
+    state.autoSave = storedAutoSave === '1';
   }
   if (!state.timers[state.activeTabId]) {
     state.timers[state.activeTabId] = 50 * 60;
@@ -190,14 +242,61 @@ const applyLayoutSettings = () => {
   radiusRange.value = state.radius;
 };
 
+const applyPalette = () => {
+  const palette = PALETTES.find((item) => item.id === state.palette) || PALETTES[0];
+  document.documentElement.style.setProperty('--accent', palette.accent);
+  document.documentElement.style.setProperty('--accent-strong', palette.accentStrong);
+  document.documentElement.style.setProperty('--primary', palette.primary);
+  Array.from(paletteGrid.children).forEach((button) => {
+    button.classList.toggle('active', button.dataset.palette === state.palette);
+  });
+};
+
+const renderPalettes = () => {
+  paletteGrid.innerHTML = '';
+  PALETTES.forEach((palette) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'palette-button';
+    button.dataset.palette = palette.id;
+    button.style.background = palette.primary;
+    button.addEventListener('click', () => setPalette(palette.id));
+    paletteGrid.appendChild(button);
+  });
+  applyPalette();
+};
+
+const applyCharacter = () => {
+  if (state.character) {
+    timerCharacterImg.src = state.character;
+    timerCharacter.style.display = 'block';
+  } else {
+    timerCharacterImg.removeAttribute('src');
+    timerCharacter.style.display = 'none';
+  }
+};
+
 const renderTabs = () => {
   tabsEl.innerHTML = '';
   state.tabs.forEach((tab) => {
     const button = document.createElement('button');
     button.className = `tab ${tab.id === state.activeTabId ? 'active' : ''}`;
     const icon = resolveTabIcon(tab);
-    button.innerHTML = `<span class="tab-icon">${icon}</span>${tab.label}`;
+    button.appendChild(createIconElement(icon, 'tab-icon'));
+    const label = document.createElement('span');
+    label.textContent = tab.label;
+    button.appendChild(label);
     button.addEventListener('click', () => selectTab(tab.id));
+    if (!tab.isLocked) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'tab-close';
+      closeBtn.textContent = '×';
+      closeBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        removeTab(tab.id);
+      });
+      button.appendChild(closeBtn);
+    }
     tabsEl.appendChild(button);
   });
 };
@@ -256,16 +355,23 @@ const renderHistory = () => {
     .forEach((entry) => {
       const item = document.createElement('div');
       item.className = 'history-item';
-      item.innerHTML = `
-        <div class="history-main">
-          <span class="history-icon">${entry.icon}</span>
-          <div class="history-meta">
-            <strong>${entry.label}</strong>
-            <span>${entry.dateText} • ${entry.time}</span>
-          </div>
-        </div>
-        <div class="history-duration">${entry.duration}</div>
-      `;
+      const main = document.createElement('div');
+      main.className = 'history-main';
+      main.appendChild(createIconElement(entry.icon, 'history-icon'));
+      const meta = document.createElement('div');
+      meta.className = 'history-meta';
+      const label = document.createElement('strong');
+      label.textContent = entry.label;
+      const time = document.createElement('span');
+      time.textContent = `${entry.dateText} • ${entry.time}`;
+      meta.appendChild(label);
+      meta.appendChild(time);
+      main.appendChild(meta);
+      const duration = document.createElement('div');
+      duration.className = 'history-duration';
+      duration.textContent = entry.duration;
+      item.appendChild(main);
+      item.appendChild(duration);
       historyEl.appendChild(item);
     });
 };
@@ -287,10 +393,17 @@ const renderCards = () => {
     const icon = resolveTabIcon(tab);
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `
-      <div class="card-title"><span class="card-icon">${icon}</span>${tab.label}</div>
-      <div class="card-value">${formatMinutes(totalMinutes)}</div>
-    `;
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.appendChild(createIconElement(icon, 'card-icon'));
+    const label = document.createElement('span');
+    label.textContent = tab.label;
+    title.appendChild(label);
+    const value = document.createElement('div');
+    value.className = 'card-value';
+    value.textContent = formatMinutes(totalMinutes);
+    card.appendChild(title);
+    card.appendChild(value);
     card.addEventListener('click', () => selectTab(tab.id));
     cardsEl.appendChild(card);
   });
@@ -397,7 +510,7 @@ const completeTimer = () => {
     label: tab ? tab.label : 'Timer',
     icon,
     minutes,
-    duration: `${minutes} min`,
+    duration: `${minutes}min`,
     time: timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
     dateText: timestamp.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
     timestamp: timestamp.toISOString(),
@@ -425,6 +538,9 @@ const completeTimer = () => {
   renderCards();
   renderTimer();
   playSound();
+  if (state.autoSave) {
+    exportSnapshot();
+  }
 };
 
 const openModal = () => {
@@ -435,19 +551,28 @@ const openModal = () => {
 
 const closeModal = () => {
   modalEl.classList.remove('open');
+  newTabInput.value = '';
+  newTabIconUrl.value = '';
+  newTabIconFile.value = '';
+  newTabIconData = '';
 };
 
 const saveNewTab = () => {
   const label = newTabInput.value.trim();
   if (!label) return;
   const id = `${label.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
-  const icon = FALLBACK_ICONS[state.tabs.length % FALLBACK_ICONS.length];
-  state.tabs.push({ id, label, type: 'custom', icon });
+  const iconUrl = newTabIconUrl.value.trim();
+  const icon = newTabIconData || iconUrl || FALLBACK_ICONS[state.tabs.length % FALLBACK_ICONS.length];
+  state.tabs.push({ id, label, type: 'custom', icon, isLocked: false });
   state.timers[id] = state.remainingSeconds;
   saveState();
   renderTabs();
   renderCards();
   closeModal();
+  newTabInput.value = '';
+  newTabIconUrl.value = '';
+  newTabIconFile.value = '';
+  newTabIconData = '';
 };
 
 const openCalendar = () => {
@@ -484,6 +609,16 @@ const handleWallpaperChange = (event) => {
   reader.readAsDataURL(file);
 };
 
+const handleTabIconFile = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    newTabIconData = reader.result;
+  };
+  reader.readAsDataURL(file);
+};
+
 const removeWallpaper = () => {
   state.wallpaper = null;
   saveState();
@@ -508,6 +643,31 @@ const removeSound = () => {
   soundInput.value = '';
 };
 
+const handleCharacterChange = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.character = reader.result;
+    saveState();
+    applyCharacter();
+  };
+  reader.readAsDataURL(file);
+};
+
+const removeCharacter = () => {
+  state.character = null;
+  saveState();
+  applyCharacter();
+  characterInput.value = '';
+};
+
+const setPalette = (paletteId) => {
+  state.palette = paletteId;
+  saveState();
+  applyPalette();
+};
+
 const handleOpacityChange = (event) => {
   state.opacity = Number(event.target.value);
   saveState();
@@ -520,19 +680,106 @@ const handleRadiusChange = (event) => {
   applyLayoutSettings();
 };
 
+const handleAutoSaveToggle = (event) => {
+  state.autoSave = event.target.checked;
+  saveState();
+};
+
+const exportSnapshot = () => {
+  const snapshot = {
+    exportedAt: new Date().toISOString(),
+    tabs: state.tabs,
+    timers: state.timers,
+    history: state.history,
+    stats: state.stats,
+    settings: {
+      theme: state.theme,
+      wallpaper: state.wallpaper,
+      sound: state.sound,
+      opacity: state.opacity,
+      radius: state.radius,
+      palette: state.palette,
+      character: state.character,
+      autoSave: state.autoSave
+    }
+  };
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `animedoro_backup_${Date.now()}.json`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};
+
+const removeTab = (tabId) => {
+  const tab = state.tabs.find((item) => item.id === tabId);
+  if (!tab || tab.isLocked) return;
+  state.tabs = state.tabs.filter((item) => item.id !== tabId);
+  delete state.timers[tabId];
+  saveState();
+  if (state.activeTabId === tabId) {
+    state.activeTabId = state.tabs[0]?.id || 'study';
+  }
+  renderTabs();
+  renderCards();
+  renderTimer();
+};
+
+const enableDragScroll = (element) => {
+  let isDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+
+  element.addEventListener('mousedown', (event) => {
+    isDown = true;
+    element.classList.add('dragging');
+    startX = event.pageX - element.offsetLeft;
+    scrollLeft = element.scrollLeft;
+  });
+
+  element.addEventListener('mouseleave', () => {
+    isDown = false;
+    element.classList.remove('dragging');
+  });
+
+  element.addEventListener('mouseup', () => {
+    isDown = false;
+    element.classList.remove('dragging');
+  });
+
+  element.addEventListener('mousemove', (event) => {
+    if (!isDown) return;
+    event.preventDefault();
+    const x = event.pageX - element.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    element.scrollLeft = scrollLeft - walk;
+  });
+};
+
 const init = () => {
   loadState();
+  state.tabs = state.tabs.map((tab) => ({
+    ...tab,
+    isLocked: tab.id === 'study' || tab.id === 'anime'
+  }));
   applyTheme();
   applyWallpaper();
   applyLayoutSettings();
-  createWeekTabs();
+  applyPalette();
+  applyCharacter();
+  autoSaveToggle.checked = state.autoSave;
   renderDate();
+  renderPalettes();
+  createWeekTabs();
   renderTabs();
   renderTimer();
   renderHistory();
   renderStats();
   renderCards();
   renderCalendar();
+  enableDragScroll(tabsEl);
+  setInterval(renderDate, 60000);
 };
 
 addTabBtn.addEventListener('click', openModal);
@@ -543,6 +790,7 @@ modalEl.addEventListener('click', (event) => {
     closeModal();
   }
 });
+newTabIconFile.addEventListener('change', handleTabIconFile);
 
 openCalendarBtn.addEventListener('click', openCalendar);
 closeCalendarBtn.addEventListener('click', closeCalendar);
@@ -568,6 +816,9 @@ wallpaperRemoveBtn.addEventListener('click', removeWallpaper);
 soundRemoveBtn.addEventListener('click', removeSound);
 opacityRange.addEventListener('input', handleOpacityChange);
 radiusRange.addEventListener('input', handleRadiusChange);
+characterInput.addEventListener('change', handleCharacterChange);
+characterRemoveBtn.addEventListener('click', removeCharacter);
+autoSaveToggle.addEventListener('change', handleAutoSaveToggle);
 
 startPauseBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
