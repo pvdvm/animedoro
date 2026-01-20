@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   timers: 'animedoro.timers',
   history: 'animedoro.history',
   stats: 'animedoro.stats',
+  animeLog: 'animedoro.animeLog',
   theme: 'animedoro.theme',
   wallpaper: 'animedoro.wallpaper',
   sound: 'animedoro.sound',
@@ -349,6 +350,7 @@ const state = {
   activeTabId: 'study',
   timers: {},
   history: [],
+  animeLog: [],
   stats: {
     episodes: 0,
     animeMinutes: 0,
@@ -415,6 +417,20 @@ const openCalendarBtn = document.getElementById('open-calendar');
 const calendarModal = document.getElementById('calendar-modal');
 const monthGridEl = document.getElementById('month-grid');
 const closeCalendarBtn = document.getElementById('close-calendar');
+const calendarYearSelect = document.getElementById('calendar-year');
+const addAnimeBtn = document.getElementById('add-anime');
+const animeListEl = document.getElementById('anime-list');
+const animeModal = document.getElementById('anime-modal');
+const animeThumbInput = document.getElementById('anime-thumb');
+const animeTitleInput = document.getElementById('anime-title');
+const animeAuthorInput = document.getElementById('anime-author');
+const animeReviewInput = document.getElementById('anime-review');
+const animeRatingEl = document.getElementById('anime-rating');
+const animeCancelBtn = document.getElementById('cancel-anime');
+const animeSaveBtn = document.getElementById('save-anime');
+let animeThumbData = '';
+let animeRatingValue = 0;
+const animeExpanded = {};
 
 const statEpisodes = document.getElementById('stat-episodes');
 const statAnimeTime = document.getElementById('stat-anime-time');
@@ -437,6 +453,15 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remaining
     .toString()
     .padStart(2, '0')}`;
+};
+
+const formatHistoryTimestamp = (isoString) => {
+  const date = new Date(isoString);
+  const day = date.toLocaleDateString('pt-BR', { day: '2-digit' });
+  const month = date.toLocaleDateString('pt-BR', { month: '2-digit' });
+  const year = date.toLocaleDateString('pt-BR', { year: '2-digit' });
+  const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  return `${day}/${month}/${year} - ${time}`;
 };
 
 const hashString = (value) =>
@@ -468,6 +493,7 @@ const saveState = () => {
   localStorage.setItem(STORAGE_KEYS.timers, JSON.stringify(state.timers));
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(state.history));
   localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(state.stats));
+  localStorage.setItem(STORAGE_KEYS.animeLog, JSON.stringify(state.animeLog));
   localStorage.setItem(STORAGE_KEYS.theme, state.theme);
   localStorage.setItem(STORAGE_KEYS.wallpaper, state.wallpaper || '');
   localStorage.setItem(STORAGE_KEYS.sound, state.sound || '');
@@ -484,6 +510,7 @@ const loadState = () => {
   const storedTimers = JSON.parse(localStorage.getItem(STORAGE_KEYS.timers) || '{}');
   const storedHistory = JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]');
   const storedStats = JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || 'null');
+  const storedAnimeLog = JSON.parse(localStorage.getItem(STORAGE_KEYS.animeLog) || '[]');
   const storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
   const storedWallpaper = localStorage.getItem(STORAGE_KEYS.wallpaper);
   const storedSound = localStorage.getItem(STORAGE_KEYS.sound);
@@ -497,6 +524,7 @@ const loadState = () => {
   state.tabs = storedTabs && storedTabs.length ? storedTabs : DEFAULT_TABS;
   state.timers = storedTimers;
   state.history = storedHistory;
+  state.animeLog = storedAnimeLog;
   if (storedStats) {
     state.stats = storedStats;
   }
@@ -732,7 +760,7 @@ const renderHistory = () => {
       const label = document.createElement('strong');
       label.textContent = entry.label;
       const time = document.createElement('span');
-      time.textContent = `${entry.dateText} • ${entry.time}`;
+      time.textContent = entry.displayTime || formatHistoryTimestamp(entry.timestamp);
       meta.appendChild(label);
       meta.appendChild(time);
       main.appendChild(meta);
@@ -743,6 +771,79 @@ const renderHistory = () => {
       item.appendChild(duration);
       historyEl.appendChild(item);
     });
+};
+
+const renderAnimeLog = () => {
+  animeListEl.innerHTML = '';
+  if (!state.animeLog.length) {
+    const empty = document.createElement('div');
+    empty.className = 'anime-empty';
+    empty.textContent = 'Nenhum conteúdo registrado ainda.';
+    animeListEl.appendChild(empty);
+    return;
+  }
+
+  const grouped = state.animeLog.reduce((acc, entry) => {
+    const key = entry.title.toLowerCase();
+    if (!acc[key]) {
+      acc[key] = { title: entry.title, items: [] };
+    }
+    acc[key].items.push(entry);
+    return acc;
+  }, {});
+
+  Object.values(grouped).forEach((group) => {
+    const groupId = group.title.toLowerCase();
+    const wrapper = document.createElement('div');
+    wrapper.className = 'anime-group';
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = 'anime-group-header';
+    header.innerHTML = `<span>${group.title}</span><span>${group.items.length}</span>`;
+    header.addEventListener('click', () => {
+      animeExpanded[groupId] = !animeExpanded[groupId];
+      renderAnimeLog();
+    });
+    wrapper.appendChild(header);
+
+    if (animeExpanded[groupId]) {
+      const list = document.createElement('div');
+      list.className = 'anime-group-list';
+      group.items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'anime-entry';
+        if (item.thumbnail) {
+          const img = document.createElement('img');
+          img.src = item.thumbnail;
+          img.alt = '';
+          img.className = 'anime-thumb';
+          card.appendChild(img);
+        }
+        const info = document.createElement('div');
+        info.className = 'anime-info';
+        const title = document.createElement('div');
+        title.className = 'anime-name';
+        title.textContent = item.title;
+        const meta = document.createElement('div');
+        meta.className = 'anime-meta';
+        meta.textContent = `${item.author || 'Autor não informado'} • ${item.createdAt}`;
+        const rating = document.createElement('div');
+        rating.className = 'anime-rating';
+        rating.textContent = '★'.repeat(item.rating || 0) + '☆'.repeat(5 - (item.rating || 0));
+        const review = document.createElement('div');
+        review.className = 'anime-review';
+        review.textContent = item.review || '';
+        info.appendChild(title);
+        info.appendChild(meta);
+        info.appendChild(rating);
+        if (item.review) info.appendChild(review);
+        card.appendChild(info);
+        list.appendChild(card);
+      });
+      wrapper.appendChild(list);
+    }
+    animeListEl.appendChild(wrapper);
+  });
 };
 
 const renderStats = () => {
@@ -801,6 +902,20 @@ const renderDate = () => {
 
 const renderCalendar = () => {
   monthGridEl.innerHTML = '';
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = currentYear - 5; year <= currentYear + 5; year += 1) {
+    years.push(year);
+  }
+  calendarYearSelect.innerHTML = '';
+  years.forEach((year) => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    calendarYearSelect.appendChild(option);
+  });
+  calendarYearSelect.value = state.selectedYear;
+
   MONTHS.forEach((month, index) => {
     const card = document.createElement('button');
     card.className = `month-card ${index === state.selectedMonth ? 'active' : ''}`;
@@ -895,8 +1010,7 @@ const completeTimer = async () => {
     icon,
     minutes,
     duration: `${minutes}min`,
-    time: timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-    dateText: timestamp.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+    displayTime: formatHistoryTimestamp(timestamp.toISOString()),
     timestamp: timestamp.toISOString(),
     weekday: (timestamp.getDay() + 6) % 7
   };
@@ -971,6 +1085,7 @@ const saveNewTab = () => {
 
 const openCalendar = () => {
   calendarModal.classList.add('open');
+  renderCalendar();
 };
 
 const closeCalendar = () => {
@@ -1096,6 +1211,7 @@ const buildSnapshot = () => ({
   tabs: state.tabs,
   timers: state.timers,
   history: state.history,
+  animeLog: state.animeLog,
   stats: state.stats,
   settings: {
     theme: state.theme,
@@ -1137,6 +1253,7 @@ const applySnapshot = (snapshot) => {
   state.tabs = snapshot.tabs || DEFAULT_TABS;
   state.timers = snapshot.timers || {};
   state.history = snapshot.history || [];
+  state.animeLog = snapshot.animeLog || [];
   state.stats = snapshot.stats || state.stats;
   if (snapshot.settings) {
     state.theme = snapshot.settings.theme || state.theme;
@@ -1169,6 +1286,7 @@ const applySnapshot = (snapshot) => {
   renderHistory();
   renderStats();
   renderCards();
+  renderAnimeLog();
 };
 
 const resetAllSettings = () => {
@@ -1176,6 +1294,7 @@ const resetAllSettings = () => {
   state.tabs = DEFAULT_TABS.map((tab) => ({ ...tab, isLocked: true }));
   state.timers = { study: 50 * 60, anime: 25 * 60 };
   state.history = [];
+  state.animeLog = [];
   state.stats = {
     episodes: 0,
     animeMinutes: 0,
@@ -1210,12 +1329,74 @@ const resetAllSettings = () => {
   renderHistory();
   renderStats();
   renderCards();
+  renderAnimeLog();
 };
 
 const handleImportSettings = async () => {
   if (!window.animedoroApi?.importBackup) return;
   const snapshot = await window.animedoroApi.importBackup();
   applySnapshot(snapshot);
+};
+
+const openAnimeModal = () => {
+  animeModal.classList.add('open');
+  animeTitleInput.value = '';
+  animeAuthorInput.value = '';
+  animeReviewInput.value = '';
+  animeThumbInput.value = '';
+  animeThumbData = '';
+  animeRatingValue = 0;
+  renderAnimeRating();
+};
+
+const closeAnimeModal = () => {
+  animeModal.classList.remove('open');
+};
+
+const handleAnimeThumb = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    animeThumbData = reader.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const renderAnimeRating = () => {
+  animeRatingEl.innerHTML = '';
+  for (let i = 1; i <= 5; i += 1) {
+    const star = document.createElement('button');
+    star.type = 'button';
+    star.className = `star ${i <= animeRatingValue ? 'active' : ''}`;
+    star.textContent = '★';
+    star.addEventListener('click', () => {
+      animeRatingValue = i;
+      renderAnimeRating();
+    });
+    animeRatingEl.appendChild(star);
+  }
+};
+
+const saveAnimeEntry = () => {
+  const title = animeTitleInput.value.trim();
+  if (!title) return;
+  const author = animeAuthorInput.value.trim();
+  const review = animeReviewInput.value.trim();
+  const createdAt = formatHistoryTimestamp(new Date().toISOString());
+  const groupId = title.toLowerCase();
+  animeExpanded[groupId] = true;
+  state.animeLog.push({
+    title,
+    author,
+    review,
+    rating: animeRatingValue,
+    thumbnail: animeThumbData,
+    createdAt
+  });
+  saveState();
+  renderAnimeLog();
+  closeAnimeModal();
 };
 
 const removeTab = (tabId) => {
@@ -1278,6 +1459,7 @@ const init = () => {
   renderDate();
   renderThemes();
   renderPalettes();
+  renderAnimeRating();
   document.querySelectorAll('.settings-section').forEach((section) => {
     section.hidden = section.dataset.section !== 'appearance';
   });
@@ -1287,6 +1469,7 @@ const init = () => {
   renderHistory();
   renderStats();
   renderCards();
+  renderAnimeLog();
   renderCalendar();
   enableDragScroll(tabsEl);
   setInterval(renderDate, 60000);
@@ -1308,6 +1491,12 @@ calendarModal.addEventListener('click', (event) => {
   if (event.target === calendarModal) {
     closeCalendar();
   }
+});
+calendarYearSelect.addEventListener('change', (event) => {
+  state.selectedYear = Number(event.target.value);
+  renderCalendar();
+  renderDate();
+  renderHistory();
 });
 
 settingsOpenBtn.addEventListener('click', openSettings);
@@ -1333,6 +1522,16 @@ autoSaveToggle.addEventListener('change', handleAutoSaveToggle);
 importSettingsBtn.addEventListener('click', handleImportSettings);
 exportSettingsBtn.addEventListener('click', exportSnapshot);
 resetSettingsBtn.addEventListener('click', resetAllSettings);
+
+addAnimeBtn.addEventListener('click', openAnimeModal);
+animeCancelBtn.addEventListener('click', closeAnimeModal);
+animeSaveBtn.addEventListener('click', saveAnimeEntry);
+animeThumbInput.addEventListener('change', handleAnimeThumb);
+animeModal.addEventListener('click', (event) => {
+  if (event.target === animeModal) {
+    closeAnimeModal();
+  }
+});
 
 startPauseBtn.addEventListener('click', startTimer);
 resetBtn.addEventListener('click', resetTimer);
