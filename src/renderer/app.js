@@ -363,7 +363,7 @@ const state = {
   selectedMonth: new Date().getMonth(),
   selectedYear: new Date().getFullYear(),
   selectedWeekday: (new Date().getDay() + 6) % 7,
-  theme: 'light',
+  theme: 'dark',
   wallpaper: null,
   sound: null,
   opacity: 0.92,
@@ -849,11 +849,13 @@ const startTimer = () => {
   if (state.running) {
     state.running = false;
     clearInterval(state.intervalId);
+    renderTabs();
     renderTimer();
     return;
   }
 
   state.running = true;
+  renderTabs();
   state.intervalId = setInterval(() => {
     if (state.remainingSeconds <= 0) {
       completeTimer();
@@ -869,6 +871,7 @@ const resetTimer = () => {
   state.running = false;
   clearInterval(state.intervalId);
   state.remainingSeconds = state.timers[state.activeTabId] || 50 * 60;
+  renderTabs();
   renderTimer();
 };
 
@@ -917,6 +920,7 @@ const completeTimer = async () => {
   renderHistory();
   renderStats();
   renderCards();
+  renderTabs();
   renderTimer();
   playSound();
   if (state.autoSave) {
@@ -1180,7 +1184,7 @@ const resetAllSettings = () => {
     streak: 0,
     lastCompletionDate: null
   };
-  state.theme = 'light';
+  state.theme = 'dark';
   state.themeId = 'non-non-biyori';
   state.wallpaper = null;
   state.sound = null;
