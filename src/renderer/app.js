@@ -423,6 +423,7 @@ const animeListEl = document.getElementById('anime-list');
 const animeModal = document.getElementById('anime-modal');
 const animeThumbInput = document.getElementById('anime-thumb');
 const animeTitleInput = document.getElementById('anime-title');
+const animeTitleList = document.getElementById('anime-title-list');
 const animeAuthorInput = document.getElementById('anime-author');
 const animeReviewInput = document.getElementById('anime-review');
 const animeRatingEl = document.getElementById('anime-rating');
@@ -431,6 +432,7 @@ const animeSaveBtn = document.getElementById('save-anime');
 let animeThumbData = '';
 let animeRatingValue = 0;
 const animeExpanded = {};
+const makeId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
 const statEpisodes = document.getElementById('stat-episodes');
 const statAnimeTime = document.getElementById('stat-anime-time');
@@ -800,10 +802,24 @@ const renderAnimeLog = () => {
     header.type = 'button';
     header.className = 'anime-group-header';
     header.innerHTML = `<span>${group.title}</span><span>${group.items.length}</span>`;
-    header.addEventListener('click', () => {
+    header.addEventListener('click', (event) => {
+      if (event.target.closest('.anime-delete')) return;
       animeExpanded[groupId] = !animeExpanded[groupId];
       renderAnimeLog();
     });
+    const deleteGroupBtn = document.createElement('button');
+    deleteGroupBtn.type = 'button';
+    deleteGroupBtn.className = 'anime-delete';
+    deleteGroupBtn.textContent = 'Excluir';
+    deleteGroupBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      state.animeLog = state.animeLog.filter(
+        (item) => item.title.toLowerCase() !== groupId
+      );
+      saveState();
+      renderAnimeLog();
+    });
+    header.appendChild(deleteGroupBtn);
     wrapper.appendChild(header);
 
     if (animeExpanded[groupId]) {
@@ -833,16 +849,39 @@ const renderAnimeLog = () => {
         const review = document.createElement('div');
         review.className = 'anime-review';
         review.textContent = item.review || '';
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'anime-delete';
+        remove.textContent = 'Excluir';
+        remove.addEventListener('click', () => {
+          state.animeLog = state.animeLog.filter((entry) => entry.id !== item.id);
+          saveState();
+          renderAnimeLog();
+        });
         info.appendChild(title);
         info.appendChild(meta);
         info.appendChild(rating);
         if (item.review) info.appendChild(review);
+        info.appendChild(remove);
         card.appendChild(info);
         list.appendChild(card);
       });
       wrapper.appendChild(list);
     }
     animeListEl.appendChild(wrapper);
+  });
+};
+
+const renderAnimeTitleList = () => {
+  if (!animeTitleList) return;
+  const titles = Array.from(
+    new Set(state.animeLog.map((entry) => entry.title).filter(Boolean))
+  );
+  animeTitleList.innerHTML = '';
+  titles.forEach((title) => {
+    const option = document.createElement('option');
+    option.value = title;
+    animeTitleList.appendChild(option);
   });
 };
 
@@ -1287,6 +1326,7 @@ const applySnapshot = (snapshot) => {
   renderStats();
   renderCards();
   renderAnimeLog();
+  renderAnimeTitleList();
 };
 
 const resetAllSettings = () => {
@@ -1330,6 +1370,7 @@ const resetAllSettings = () => {
   renderStats();
   renderCards();
   renderAnimeLog();
+  renderAnimeTitleList();
 };
 
 const handleImportSettings = async () => {
@@ -1347,6 +1388,7 @@ const openAnimeModal = () => {
   animeThumbData = '';
   animeRatingValue = 0;
   renderAnimeRating();
+  renderAnimeTitleList();
 };
 
 const closeAnimeModal = () => {
@@ -1387,6 +1429,7 @@ const saveAnimeEntry = () => {
   const groupId = title.toLowerCase();
   animeExpanded[groupId] = true;
   state.animeLog.push({
+    id: makeId(),
     title,
     author,
     review,
@@ -1396,6 +1439,7 @@ const saveAnimeEntry = () => {
   });
   saveState();
   renderAnimeLog();
+  renderAnimeTitleList();
   closeAnimeModal();
 };
 
@@ -1470,6 +1514,7 @@ const init = () => {
   renderStats();
   renderCards();
   renderAnimeLog();
+  renderAnimeTitleList();
   renderCalendar();
   enableDragScroll(tabsEl);
   setInterval(renderDate, 60000);
