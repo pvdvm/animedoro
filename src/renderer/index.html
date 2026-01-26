@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animedoro Pro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand">
+          <span class="brand-title">Animedoro Pro</span>
+          <span class="brand-subtitle">Estação</span>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" id="settings-open" title="Configurações">
+            ⚙️
+          </button>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <section class="panel timer-panel">
+          <div class="tab-row">
+            <div class="tabs" id="tabs"></div>
+            <button class="add-tab" id="add-tab" title="Nova aba">
+              +
+            </button>
+          </div>
+
+          <div class="timer-body">
+            <div class="timer-circle" id="timer-circle">
+              <div class="timer-value" id="timer-value">50:00</div>
+              <div class="timer-edit">Clique para editar</div>
+            </div>
+            <div class="timer-controls">
+              <button class="step-button" data-adjust="-5">-5</button>
+              <button class="primary" id="start-pause">Começar</button>
+              <button class="secondary" id="reset">Reset</button>
+              <button class="step-button" data-adjust="5">+5</button>
+            </div>
+            <div class="timer-meta" id="timer-meta"></div>
+            <div class="timer-character" id="timer-character">
+              <img id="timer-character-img" alt="Personagem" />
+            </div>
+          </div>
+        </section>
+
+        <section class="panel diary-panel">
+          <div class="diary-header">
+            <div class="diary-title">
+              <span>Diário</span>
+            </div>
+            <div class="diary-controls">
+              <button class="icon-button" id="open-calendar" title="Calendário">
+                📅
+              </button>
+              <div class="diary-date" id="current-date"></div>
+            </div>
+          </div>
+
+          <div class="diary-layout">
+            <div class="diary-main">
+              <div class="week-tabs" id="week-tabs"></div>
+
+              <div class="history-list" id="history"></div>
+
+              <div class="stats">
+                <div class="stat-row">
+                  <div>
+                    <span class="stat-label">Episódios</span>
+                    <span class="stat-value" id="stat-episodes">0</span>
+                  </div>
+                  <div>
+                    <span class="stat-label">Tempo de anime</span>
+                    <span class="stat-value" id="stat-anime-time">0h 0m</span>
+                  </div>
+                  <div>
+                    <span class="stat-label">Tempo de estudo</span>
+                    <span class="stat-value" id="stat-study-time">0h 0m</span>
+                  </div>
+                </div>
+                <div class="stat-row">
+                  <div>
+                    <span class="stat-label">Streak</span>
+                    <span class="stat-value" id="stat-streak">0 dias</span>
+                  </div>
+                  <div>
+                    <span class="stat-label">Foco total</span>
+                    <span class="stat-value" id="stat-total">0h 0m</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cards" id="cards"></div>
+            </div>
+
+            <aside class="anime-panel">
+              <div class="anime-header">
+                <span class="anime-title">Assistidos</span>
+                <button class="secondary" id="add-anime">Registrar novo conteúdo</button>
+              </div>
+              <div class="anime-list" id="anime-list"></div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h3>Criar nova aba</h3>
+        <p>Nome do novo timer:</p>
+        <input type="text" id="new-tab-name" placeholder="Ex: Redação" />
+        <p>Ícone (URL ou arquivo):</p>
+        <input type="text" id="new-tab-icon-url" placeholder="https://..." />
+        <label class="file-button">
+          Enviar ícone
+          <input type="file" id="new-tab-icon-file" accept="image/*" hidden />
+        </label>
+        <div class="modal-actions">
+          <button class="secondary" id="cancel-modal">Cancelar</button>
+          <button class="primary" id="save-modal">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="calendar-modal">
+      <div class="modal-content calendar-content">
+        <h3>Escolha o mês</h3>
+        <div class="calendar-year">
+          <label for="calendar-year">Ano</label>
+          <select id="calendar-year"></select>
+        </div>
+        <div class="month-grid" id="month-grid"></div>
+        <div class="modal-actions">
+          <button class="secondary" id="close-calendar">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="anime-modal">
+      <div class="modal-content anime-content">
+        <h3>Registrar novo conteúdo</h3>
+        <p>Thumbnail:</p>
+        <label class="file-button">
+          Escolher imagem
+          <input type="file" id="anime-thumb" accept="image/*" hidden />
+        </label>
+        <p>Nome do anime:</p>
+        <input type="text" id="anime-title" list="anime-title-list" placeholder="Ex: Naruto" />
+        <datalist id="anime-title-list"></datalist>
+        <p>Autor:</p>
+        <input type="text" id="anime-author" placeholder="Ex: Masashi Kishimoto" />
+        <p>Nota:</p>
+        <div class="star-rating" id="anime-rating"></div>
+        <p>Resenha:</p>
+        <textarea id="anime-review" rows="4" placeholder="Escreva sua resenha..."></textarea>
+        <div class="modal-actions">
+          <button class="secondary" id="cancel-anime">Cancelar</button>
+          <button class="primary" id="save-anime">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="settings-modal">
+      <div class="modal-content settings-content">
+        <div class="settings-header">
+          <h3>Ajustes visuais</h3>
+          <button class="icon-button" id="settings-close" title="Fechar">✕</button>
+        </div>
+        <div class="settings-tabs" id="settings-tabs">
+          <button class="settings-tab active" data-section="appearance">Aparência</button>
+          <button class="settings-tab" data-section="layout">Layout</button>
+          <button class="settings-tab" data-section="media">Mídia</button>
+          <button class="settings-tab" data-section="backup">Backup</button>
+        </div>
+        <div class="settings-section" data-section="appearance">
+          <span class="settings-title">Modo de aparência</span>
+          <div class="segmented-control">
+            <button class="segment" id="theme-light">☀️ Claro</button>
+            <button class="segment" id="theme-dark">🌙 Escuro</button>
+          </div>
+        </div>
+        <div class="settings-section" data-section="appearance">
+          <span class="settings-title">Temas completos</span>
+          <div class="theme-grid" id="theme-grid"></div>
+        </div>
+        <div class="settings-section" data-section="appearance">
+          <span class="settings-title">Paleta de cores</span>
+          <div class="palette-grid" id="palette-grid"></div>
+        </div>
+        <div class="settings-section" data-section="layout">
+          <span class="settings-title">Transparência</span>
+          <input type="range" id="opacity-range" min="0.6" max="1" step="0.05" />
+        </div>
+        <div class="settings-section" data-section="layout">
+          <span class="settings-title">Arredondamento</span>
+          <input type="range" id="radius-range" min="8" max="24" step="1" />
+        </div>
+        <div class="settings-section" data-section="media">
+          <span class="settings-title">Personagem do timer</span>
+          <label class="file-button">
+            Escolher imagem
+            <input type="file" id="character-input" accept="image/*" hidden />
+          </label>
+          <button class="secondary" id="character-remove">Remover</button>
+        </div>
+        <div class="settings-section" data-section="media">
+          <span class="settings-title">Papel de fundo</span>
+          <label class="file-button">
+            Escolher imagem
+            <input type="file" id="wallpaper-input" accept="image/*" hidden />
+          </label>
+          <button class="secondary" id="wallpaper-remove">Remover</button>
+        </div>
+        <div class="settings-section" data-section="media">
+          <span class="settings-title">Som do timer</span>
+          <label class="file-button">
+            Escolher áudio
+            <input type="file" id="sound-input" accept="audio/*" hidden />
+          </label>
+          <button class="secondary" id="sound-remove">Remover</button>
+        </div>
+        <div class="settings-section" data-section="backup">
+          <span class="settings-title">Backup automático</span>
+          <label class="toggle">
+            <input type="checkbox" id="auto-save-toggle" />
+            <span>Salvar ao fim do timer</span>
+          </label>
+        </div>
+        <div class="settings-section" data-section="backup">
+          <span class="settings-title">Configurações</span>
+          <div class="settings-actions">
+            <button class="secondary" id="import-settings">Importar</button>
+            <button class="secondary" id="export-settings">Exportar</button>
+            <button class="secondary danger" id="reset-settings">Resetar tudo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
